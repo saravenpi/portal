@@ -99,8 +99,8 @@ const generateHtml = async (config: Config): Promise<string> => {
       const linksHtmlPromises = project.links
         .map(async (link) => {
           const faviconUrl = getFaviconUrl(link.url);
-          return `<a href="${link.url}">
-                    <div class="link-card">
+          return `<a href="${link.url}" class="link-card">
+                    <div class="link-card-content">
                       ${faviconUrl ? `<img src="${faviconUrl}" alt="" width="16" height="16">` : ''}
                       ${link.name}
                     </div>
@@ -128,27 +128,51 @@ const generateHtml = async (config: Config): Promise<string> => {
     <style>
         body {
             font-family: sans-serif;
-            margin: 40px;
-            background-color: #f0f0f0;
+            margin: 20px;
+            background-color: #0A0A0A;
+            color: #D4D4D4;
         }
         .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background-color: #fff;
-            padding: 20px;
+            max-width: 960px;
+            margin: 20px auto;
+            background-color: #262626;
+            padding: 15px;
             border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                margin: 10px;
+            }
+            .container {
+                margin: 10px auto;
+                padding: 10px;
+            }
+            .links-container {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                margin: 5px;
+            }
+            .container {
+                margin: 5px auto;
+                padding: 5px;
+            }
         }
         h1, h3 {
-            color: #333;
+            color: #F5F5F5;
         }
         .project-card {
-            background-color: #fff;
+            background-color: #262626;
             border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.5);
             padding: 20px;
             margin-bottom: 20px;
-            border: 2px solid #eee;
+            border: 2px solid #404040;
         }
         .links-container {
             display: flex;
@@ -156,28 +180,27 @@ const generateHtml = async (config: Config): Promise<string> => {
             gap: 15px;
         }
         .link-card {
-            background-color: #f9f9f9;
-            border: 1px solid #eee;
+            background-color: #404040;
+            border: 1px solid #525252;
             border-radius: 6px;
             padding: 10px 15px;
             display: flex;
             align-items: center;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
             transition: transform 0.2s ease-in-out;
+            text-decoration: underline;
+            color: #F5F5F5;
         }
         .link-card:hover {
             transform: translateY(-3px);
-            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.6);
+            text-decoration: underline;
         }
-        .link-card a {
-            text-decoration: none;
-            color: #007bff;
+        .link-card-content {
             display: flex;
             align-items: center;
-            font-weight: bold;
-        }
-        .link-card a:hover {
-            text-decoration: underline;
+            width: 100%;
+            height: 100%;
         }
         .link-card img {
             margin-right: 10px;
