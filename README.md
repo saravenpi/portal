@@ -4,7 +4,7 @@
 
 ## Features
 
-*   **YAML-driven Configuration:** Easily define your projects and links in a human-readable `portal.yaml` file.
+*   **YAML-driven Configuration:** Easily define your projects and links in a human-readable `portal.yml` file.
 *   **Automatic Favicons:** Fetches and displays favicons for your links, making navigation more intuitive.
 *   **Clean & Responsive HTML Output:** Generates a single, self-contained `index.html` file with a clean and modern design.
 *   **Easy Installation:** A convenient `install.sh` script to set up the tool globally on your system.
@@ -54,21 +54,74 @@ If `portal.yaml` is not found in the current directory and no path is provided, 
 
 ## Configuration (`portal.yaml`)
 
-The `portal.yaml` file defines the structure of your index page. It's an array of projects, where each project contains a name and a list of links.
+The `portal.yml` file defines the structure of your index page. It can include a global `title` for the HTML page and an array of projects. Each project contains a name, an optional description, an optional icon, and a list of links. Each link can also have an optional description and multiple tags.
 
-Here's an example `portal.yaml`:
+Here's an example `portal.yml`:
 
 ```yaml
-- project: My Awesome Project
-  links:
-    - name: GitHub Repository
-      url: https://github.com/your-org/your-repo
-    - name: Live Demo
-      url: https://your-project.example.com
-- project: Another Project
-  links:
-    - name: Documentation
-      url: https://docs.another-project.com
+title: My Awesome Portal # Optional: Sets the title of the HTML page
+projects:
+  - project: My Awesome Project
+    description: A short description of my awesome project.
+    icon: "🚀" # Can be an emoji or a URL to an image (e.g., https://example.com/icon.png)
+    links:
+      - name: GitHub Repository
+        url: https://github.com/your-org/your-repo
+        description: The official GitHub repository for this project.
+      - name: Live Demo
+        url: https://your-project.example.com
+  - project: Another Project
+    links:
+      - name: Documentation
+        url: https://docs.another-project.com
+```
+
+## Example Configuration (`example.yml`)
+
+A non-sensitive example configuration file, `example.yml`, is provided for demonstration purposes. You can use it as a starting point or reference for creating your own `portal.yml`.
+
+To generate `index.html` using the example configuration:
+
+```bash
+portal example.yml
+```
+
+Here's the content of `example.yml`:
+
+```yaml
+title: Example Portal
+projects:
+  ExampleProject1:
+    description: A sample internal development platform.
+    icon: "💻"
+    links:
+      Docs: https://docs.example.com
+      Dashboard: https://dashboard.example.com
+      Repo: https://github.com/example/repo
+      PrivateLink:
+        url: https://private.example.com
+        private: true
+      Monitoring:
+        url: https://monitor.example.com
+        tags: [ops, monitoring]
+
+  ExampleProject2:
+    description: A sample side project for food delivery.
+    icon: "🍔"
+    links:
+      Admin: https://admin.example.com
+      Frontend: https://frontend.example.com
+      Backend: https://backend.example.com
+      MobileApp:
+        url: https://mobile.example.com
+        tags: [mobile, app]
+
+  Utilities:
+    description: Useful personal links.
+    icon: "🛠️"
+    links:
+      SearchEngine: https://www.example-search.com
+      CloudConsole: https://console.example-cloud.com
 ```
 
 ## Development
