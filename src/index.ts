@@ -362,7 +362,7 @@ const generateHtml = async (config: Config): Promise<string> => {
             <input type="text" id="search-bar" placeholder="Search links...">
             <select id="tag-filter">
                 <option value="">All Tags</option>
-                ${[...new Set(config.projects.flatMap(p => p.links).map(l => l.tags).filter(Boolean))].map(tag => `<option value="${tag}">${tag}</option>`).join('')}
+                ${[...new Set(config.projects.flatMap(p => p.links).flatMap(l => l.tags || []).filter(Boolean))].map(tag => `<option value="${tag}">${tag}</option>`).join('')}
             </select>
         </div>
         <div id="projects">
