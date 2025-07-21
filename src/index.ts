@@ -125,7 +125,7 @@ const generateHtml = async (config: Config): Promise<string> => {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Projects</title>
+    <title>🚪 Portal</title>
     <style>
         body {
             font-family: sans-serif;
@@ -188,7 +188,7 @@ const generateHtml = async (config: Config): Promise<string> => {
 </head>
 <body>
     <div class="container">
-        <h1>Projects</h1>
+        <h1>🚪 Portal</h1>
         <div id="projects">
             ${projectsHtml}
         </div>
