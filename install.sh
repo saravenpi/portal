@@ -9,12 +9,7 @@ BIN_PATH="/usr/local/bin/portal"
 
 # Check if portal is already installed
 if [ -f "$BIN_PATH" ]; then
-  read -p "Portal is already installed. Do you want to update it? (y/N) " -n 1 -r
-  echo
-  if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-    echo "Update cancelled. Exiting."
-    exit 0
-  fi
+  echo "Portal is already installed. Now proceeding with update."
 fi
 
 # Check if Bun is installed
