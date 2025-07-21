@@ -127,7 +127,7 @@ const generateHtml = async (config: Config): Promise<string> => {
       const linksHtmlPromises = project.links
         .map(async (link) => {
           const faviconUrl = getFaviconUrl(link.url);
-          return `<a href="${link.url}" class="link-card">
+          return `<a href="${link.url}" class="link-card" target="_blank" rel="noopener noreferrer">
                     <div class="link-card-content">
                       <div class="link-card-main">
                         <div class="link-card-title-group">
@@ -157,8 +157,7 @@ const generateHtml = async (config: Config): Promise<string> => {
     });
   const projectsHtml = (await Promise.all(projectsHtmlPromises)).join('');
 
-  return `
-<!DOCTYPE html>
+  return `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
