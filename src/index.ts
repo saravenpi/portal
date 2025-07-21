@@ -357,7 +357,7 @@ const generateHtml = async (config: Config): Promise<string> => {
 </head>
 <body>
     <div class="container">
-        <h1>🚪 Portal</h1>
+        <h1>${config.title || '🚪 Portal'}</h1>
         <div class="filters">
             <input type="text" id="search-bar" placeholder="Search links...">
             <select id="tag-filter">
