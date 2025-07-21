@@ -99,13 +99,12 @@ const generateHtml = async (config: Config): Promise<string> => {
       const linksHtmlPromises = project.links
         .map(async (link) => {
           const faviconUrl = getFaviconUrl(link.url);
-          return `
+          return `<a href="${link.url}">
                     <div class="link-card">
-                        <a href="${link.url}">
-                            ${faviconUrl ? `<img src="${faviconUrl}" alt="" width="16" height="16">` : ''}
-                            ${link.name}
-                        </a>
-                    </div>`;
+                      ${faviconUrl ? `<img src="${faviconUrl}" alt="" width="16" height="16">` : ''}
+                      ${link.name}
+                    </div>
+                  </a>`;
         });
       const linksHtml = (await Promise.all(linksHtmlPromises)).join('');
 
