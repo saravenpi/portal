@@ -15,14 +15,44 @@ interface Project {
 type Config = Project[];
 
 /**
+ * Displays the help message for the portal CLI tool and exits the process.
+ */
+const showHelp = () => {
+  console.log(`
+Usage: portal [path/to/your/portal.yaml] [options]
+
+portal is a command-line tool that generates a beautiful HTML index page
+from a simple YAML configuration file.
+
+Arguments:
+  [path/to/your/portal.yaml]  Optional. Path to the YAML configuration file.
+                              Defaults to 'portal.yaml' in the current directory.
+
+Options:
+  -h, --help                  Display this help message.
+
+Examples:
+  portal
+  portal my_custom_config.yaml
+  portal -h
+`);
+  process.exit(0);
+};
+
+/**
  * Determines the path to the YAML configuration file.
  * It checks for a command-line argument; otherwise, it defaults to 'portal.yaml' in the current working directory.
  * @returns {string} The absolute path to the YAML file.
  */
 const getYamlPath = (): string => {
-  const args = process.argv;
-  if (args.length > 2 && args[2]) {
-    return path.resolve(args[2]);
+  const args = process.argv.slice(2);
+
+  if (args.includes('-h') || args.includes('--help')) {
+    showHelp();
+  }
+
+  if (args.length > 0 && args[0]) {
+    return path.resolve(args[0]);
   }
   return path.resolve(process.cwd(), 'portal.yaml');
 };

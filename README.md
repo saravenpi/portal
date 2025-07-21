@@ -13,22 +13,18 @@
 
 Before you begin, ensure you have [Bun](https://bun.sh/docs/installation) installed on your system.
 
-To install `portal` globally, run the following commands in your terminal:
+To install `portal` globally, run the following command in your terminal:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/saravenpi/portal/main/install.sh | bash
 ```
 
-Alternatively, you can download and run the `install.sh` script:
-
-```bash
-./install.sh
-```
-
 This script will:
-1.  Install project dependencies using Bun.
-2.  Build the `portal` executable.
-3.  Move the `portal` executable to `/usr/local/bin`, making it accessible from anywhere.
+1.  Check for and install Bun if it's not found.
+2.  Clones the `portal` repository into a temporary directory.
+3.  Install project dependencies using Bun.
+4.  Build the `portal` executable.
+5.  Move the `portal` executable to `/usr/local/bin`, making it accessible from anywhere.
 
 ## Usage
 
@@ -44,6 +40,14 @@ To specify a different YAML configuration file:
 
 ```bash
 portal /path/to/your/custom_config.yaml
+```
+
+To display help information:
+
+```bash
+portal -h
+# or
+portal --help
 ```
 
 If `portal.yaml` is not found in the current directory and no path is provided, `portal` will create a default `portal.yaml` for you to get started.
