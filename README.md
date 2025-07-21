@@ -42,6 +42,20 @@ To specify a different YAML configuration file:
 portal /path/to/your/custom_config.yaml
 ```
 
+To specify an output file for the generated HTML (defaults to `index.html` in the YAML file's directory):
+
+```bash
+portal -o /path/to/your/output.html
+# or
+portal --outfile /path/to/your/output.html
+```
+
+You can combine these flags:
+
+```bash
+portal /path/to/your/custom_config.yaml -o /path/to/your/output.html
+```
+
 To display help information:
 
 ```bash

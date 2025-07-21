@@ -38,31 +38,59 @@ Arguments:
 
 Options:
   -h, --help                  Display this help message.
+  -o, --outfile <path>        Specify the output path for the generated HTML file.
+                              Defaults to 'index.html' in the YAML file's directory.
 
 Examples:
   portal
   portal my_custom_config.yml
+  portal -o output.html
+  portal my_custom_config.yml -o /tmp/my_portal.html
   portal -h
 `);
   process.exit(0);
 };
 
 /**
- * Determines the path to the YAML configuration file.
- * It checks for a command-line argument; otherwise, it defaults to 'portal.yaml' in the current working directory.
- * @returns {string} The absolute path to the YAML file.
+ * Parses command-line arguments to determine the YAML config path and HTML output path.
+ * @returns {{ yamlPath: string, outputPath: string }} An object containing the paths.
  */
-const getYamlPath = (): string => {
+const parseArgs = (): { yamlPath: string; outputPath: string } => {
   const args = process.argv.slice(2);
+  let yamlPath: string | undefined;
+  let outputPath: string | undefined;
 
-  if (args.includes('-h') || args.includes('--help')) {
-    showHelp();
+  for (let i = 0; i < args.length; i++) {
+    const arg = args[i];
+    switch (arg) {
+      case '-h':
+      case '--help':
+        showHelp();
+        break;
+      case '-o':
+      case '--outfile':
+        if (i + 1 < args.length) {
+          outputPath = path.resolve(args[++i]);
+        } else {
+          console.error('Error: --outfile requires a path argument.');
+          process.exit(1);
+        }
+        break;
+      default:
+        if (!yamlPath) {
+          yamlPath = path.resolve(arg);
+        } else {
+          console.error(`Error: Unexpected argument: ${arg}`);
+          process.exit(1);
+        }
+        break;
+    }
   }
 
-  if (args.length > 0 && args[0]) {
-    return path.resolve(args[0]);
-  }
-  return path.resolve(process.cwd(), 'portal.yml');
+  const finalYamlPath = yamlPath || path.resolve(process.cwd(), 'portal.yml');
+  const finalOutputPath = outputPath || path.resolve(path.dirname(finalYamlPath), 'index.html');
+
+  return { yamlPath: finalYamlPath, outputPath: finalOutputPath };
 };
 
 /**
@@ -418,7 +446,8 @@ const generateHtml = async (config: Config): Promise<string> => {
  * loads the configuration, generates HTML, and writes it to 'index.html'.
  */
 const main = async () => {
-  const yamlPath = getYamlPath();
+  const { yamlPath, outputPath } = parseArgs();
+
   if (!fs.existsSync(yamlPath)) {
     if (yamlPath.endsWith('portal.yml')) {
       const defaultConfig: Config = {
@@ -443,7 +472,6 @@ const main = async () => {
 
   const config = loadYaml(yamlPath);
   const htmlContent = await generateHtml(config);
-  const outputPath = path.resolve(path.dirname(yamlPath), 'index.html');
   fs.writeFileSync(outputPath, htmlContent, 'utf8');
   console.log(`Successfully created ${outputPath}`);
 };
