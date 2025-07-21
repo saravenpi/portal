@@ -1,0 +1,10 @@
+- project: My Awesome Project
+  links:
+    - name: GitHub Repository
+      url: https://github.com/your-org/your-repo
+    - name: Live Demo
+      url: https://your-project.example.com
+- project: Another Project
+  links:
+    - name: Documentation
+      url: https://docs.another-project.com
