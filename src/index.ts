@@ -446,7 +446,7 @@ const main = async () => {
   const htmlContent = await generateHtml(config);
   const outputPath = path.resolve(path.dirname(yamlPath), 'index.html');
   fs.writeFileSync(outputPath, htmlContent, 'utf8');
-  
+  console.log(`Successfully created ${outputPath}`);
 };
 
 main();
