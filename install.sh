@@ -16,11 +16,6 @@ fi
 if ! command -v bun &>/dev/null; then
   echo "Bun is not installed. Attempting to install Bun..."
   curl -fsSL https://bun.sh/install | bash
-  if ! command -v bun &>/dev/null; then
-    echo "Failed to install Bun. Please install Bun manually to proceed."
-    echo "You can install Bun from https://bun.sh/docs/installation"
-    exit 1
-  fi
 fi
 
 echo "Bun is installed. Proceeding with installation."
