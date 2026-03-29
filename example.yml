@@ -1,36 +1,32 @@
 title: Example Portal
-projects:
-  ExampleProject1:
-    description: A sample internal development platform.
-    icon: "https://www.google.com/s2/favicons?domain=example.com"
-    links:
-      Docs:
-        url: https://docs.example.com
-        description: Official documentation for ExampleProject1.
-      Dashboard: https://dashboard.example.com
-      Repo: https://github.com/example/repo
-      PrivateLink:
-        url: https://private.example.com
-        private: true
-      Monitoring:
-        url: https://monitor.example.com
-        tags: [ops, monitoring]
 
-  ExampleProject2:
-    description: A sample side project for food delivery.
-    icon: "🍔"
-    links:
-      Admin: https://admin.example.com
-      Frontend: https://frontend.example.com
-      Backend: https://backend.example.com
-      MobileApp:
-        url: https://mobile.example.com
-        description: Official mobile app for ExampleProject2.
-        tags: [mobile, app]
+Development:
+  Docs: https://docs.example.com
+  Dashboard: https://dashboard.example.com
+  Repo:
+    url: https://github.com/example/repo
+    description: Official source code
+  Monitoring:
+    url: https://monitor.example.com
+    tags: [ops, monitoring]
+  PrivateLink:
+    url: https://private.example.com
+    private: true
 
-  Utilities:
-    description: Useful personal links.
-    icon: "🛠️"
+categories:
+  - category: Projects
+    description: The parser also accepts an explicit categories container
     links:
-      SearchEngine: https://www.example-search.com
-      CloudConsole: https://console.example-cloud.com
+      - Admin: https://admin.example.com
+      - Frontend: https://frontend.example.com
+      - Backend: https://backend.example.com
+      - name: Mobile App
+        href: https://mobile.example.com
+        desc: Official mobile app
+        tags: mobile, app
+
+  - name: Utilities
+    items:
+      - SearchEngine: https://www.example-search.com
+      - CloudConsole: https://console.example-cloud.com
+      - Docs -> https://status.example-cloud.com

@@ -1,10 +1,10 @@
 # portal
 
-`portal` is a command-line tool that generates a beautiful HTML index page from a simple YAML configuration file. It's designed to help you organize and quickly access your projects and their associated links (e.g., documentation, repositories, live deployments).
+`portal` is a command-line tool that generates a beautiful HTML index page from a forgiving YAML configuration file. It is built for the obvious use case: throw links into YAML without babysitting the schema.
 
 ## Features
 
-*   **YAML-driven Configuration:** Easily define your projects and links in a human-readable `portal.yml` file.
+*   **Forgiving Syntax:** Accepts flat maps, arrays, `categories:` / `projects:` containers, shorthand strings, and richer link objects.
 *   **Automatic Favicons:** Fetches and displays favicons for your links, making navigation more intuitive.
 *   **Clean & Responsive HTML Output:** Generates a single, self-contained `index.html` file with a clean and modern design.
 *   **Easy Installation:** A convenient `install.sh` script to set up the tool globally on your system.
@@ -30,11 +30,13 @@ This script will:
 
 After installation, you can run `portal` from any directory.
 
-To generate `index.html` using a `portal.yaml` file in your current directory:
+To generate `index.html` using a portal file in your current directory:
 
 ```bash
 portal
 ```
+
+`portal` will look for `portal.yml`, `portal.yaml`, or the only `*.portal.yml` file in the current directory.
 
 To specify a different YAML configuration file:
 
@@ -64,30 +66,81 @@ portal -h
 portal --help
 ```
 
-If `portal.yaml` is not found in the current directory and no path is provided, `portal` will create a default `portal.yaml` for you to get started.
+If no default file is found in the current directory, `portal` creates a starter `portal.yml`.
 
 ## Configuration (`portal.yaml`)
 
-The `portal.yml` file defines the structure of your index page. It can include a global `title` for the HTML page and an array of projects. Each project contains a name, an optional description, an optional icon, and a list of links. Each link can also have an optional description and multiple tags.
+The only required idea is simple: your file contains links, either directly at the root or inside categories. Everything else is optional.
 
-Here's an example `portal.yml`:
+The simplest syntax:
 
 ```yaml
-title: My Awesome Portal # Optional: Sets the title of the HTML page
-projects:
-  - project: My Awesome Project
-    description: A short description of my awesome project.
-    icon: "🚀" # Can be an emoji or a URL to an image (e.g., https://example.com/icon.png)
+title: My Portal
+
+Docs: https://docs.example.com
+Dashboard: https://dashboard.example.com
+GitHub:
+  url: https://github.com/example/repo
+  description: Still just a link, just with metadata
+
+Operations:
+  Grafana:
+    url: https://grafana.example.com
+    tags: [ops, metrics]
+    description: Dashboards and alerts
+  Private VPN:
+    url: https://vpn.example.com
+    private: true
+```
+
+Alternative syntaxes are also valid:
+
+```yaml
+title: My Portal
+
+categories:
+  - category: Development
+    description: Where the shipping happens
     links:
-      - name: GitHub Repository
-        url: https://github.com/your-org/your-repo
-        description: The official GitHub repository for this project.
-      - name: Live Demo
-        url: https://your-project.example.com
-  - project: Another Project
+      - Docs -> https://docs.example.com
+      - name: Repo
+        url: https://github.com/example/repo
+        tags: code, git
+      - Dashboard: https://dashboard.example.com
+
+  - name: Utilities
+    items:
+      Search: https://search.example.com
+      Status:
+        href: https://status.example.com
+        desc: Everything is probably fine
+```
+
+Accepted link syntaxes:
+
+```yaml
+title: My Portal
+
+Docs: https://docs.example.com
+Repo:
+  url: https://github.com/example/repo
+  tags: [code]
+
+Development:
+  Docs: https://docs.example.com
+  Repo:
+    url: https://github.com/example/repo
+    tags: [code]
+  Search: www.google.com
+
+categories:
+  - category: Misc
     links:
-      - name: Documentation
-        url: https://docs.another-project.com
+      - https://example.com
+      - Docs -> https://docs.example.com
+      - name: Dashboard
+        href: https://dashboard.example.com
+        desc: Rich object syntax
 ```
 
 ## Example Configuration (`example.yml`)
@@ -100,43 +153,8 @@ To generate `index.html` using the example configuration:
 portal example.yml
 ```
 
-Here's the content of `example.yml`:
-
-```yaml
-title: Example Portal
-projects:
-  ExampleProject1:
-    description: A sample internal development platform.
-    icon: "💻"
-    links:
-      Docs: https://docs.example.com
-      Dashboard: https://dashboard.example.com
-      Repo: https://github.com/example/repo
-      PrivateLink:
-        url: https://private.example.com
-        private: true
-      Monitoring:
-        url: https://monitor.example.com
-        tags: [ops, monitoring]
-
-  ExampleProject2:
-    description: A sample side project for food delivery.
-    icon: "🍔"
-    links:
-      Admin: https://admin.example.com
-      Frontend: https://frontend.example.com
-      Backend: https://backend.example.com
-      MobileApp:
-        url: https://mobile.example.com
-        tags: [mobile, app]
-
-  Utilities:
-    description: Useful personal links.
-    icon: "🛠️"
-    links:
-      SearchEngine: https://www.example-search.com
-      CloudConsole: https://console.example-cloud.com
-```
+See [example.yml](/Users/fangafunk/Projects/Ether/portal/example.yml) for a working sample that mixes the simple and rich syntaxes.
+For a fuller syntax reference, see [SYNTAX.md](/Users/fangafunk/Projects/Ether/portal/SYNTAX.md).
 
 ## Development
 
