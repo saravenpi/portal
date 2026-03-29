@@ -563,6 +563,8 @@ const loadYaml = (filePath: string): Config => {
     const root = loadedYaml as InputRecord;
     const issues: ParseIssue[] = [];
     const categories: Category[] = [];
+    const rootLinks: Link[] = [];
+    let rootLinksCategory: Category | null = null;
 
     if ('links' in root) {
       pushIssue(
@@ -572,23 +574,29 @@ const loadYaml = (filePath: string): Config => {
       );
     }
 
-    const rootLinks = parseRootLinks(root, issues);
-
-    if (rootLinks.length > 0) {
-      categories.push({
-        category: ROOT_LINKS_CATEGORY,
-        links: rootLinks,
-      });
-    }
-
-    for (const key of CATEGORY_CONTAINER_KEYS) {
-      if (key in root) {
-        categories.push(...parseCategoriesContainer(root[key], issues, key));
-      }
-    }
-
     for (const [key, value] of Object.entries(root)) {
-      if (RESERVED_ROOT_KEYS.has(key) || CATEGORY_CONTAINER_KEYS.includes(key) || isRootLinkEntry(value)) {
+      if (key === 'title' || key === 'name' || key === 'description') {
+        continue;
+      }
+
+      if (key === 'links') {
+        continue;
+      }
+
+      if (CATEGORY_CONTAINER_KEYS.includes(key)) {
+        categories.push(...parseCategoriesContainer(value, issues, key));
+        continue;
+      }
+
+      if (isRootLinkEntry(value)) {
+        if (!rootLinksCategory) {
+          rootLinksCategory = {
+            category: ROOT_LINKS_CATEGORY,
+            links: rootLinks,
+          };
+          categories.push(rootLinksCategory);
+        }
+        rootLinks.push(...parseLinkEntry(value, key, issues, key));
         continue;
       }
 
@@ -877,7 +885,7 @@ const generateHtml = async (config: Config): Promise<string> => {
                     const matchesTag = selectedTag === '' || linkTags.includes(selectedTag);
 
                     if (matchesSearch && matchesTag) {
-                        linkCard.style.display = 'flex';
+                        linkCard.style.display = 'block';
                         categoryHasVisibleLinks = true;
                     } else {
                         linkCard.style.display = 'none';
