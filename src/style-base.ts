@@ -1,15 +1,42 @@
 export const portalBaseStyles = `
         :root {
-            --bg: #15171c;
-            --surface: #1b1e25;
-            --surface-strong: #22262f;
-            --surface-hover: #ebe3d5;
-            --text: #f4eee3;
-            --text-strong: #1c1915;
-            --text-muted: #b8af9f;
-            --border-soft: #6f675c;
-            --accent: #d6a24b;
-            --shadow: rgba(6, 8, 12, 0.28);
+            color-scheme: dark;
+            --bg: #09090C;
+            --surface: #0f0f12;
+            --surface-strong: #15161a;
+            --surface-hover: #1a1c21;
+            --text: #f5f6f8;
+            --text-strong: #ffffff;
+            --text-muted: #9ba3b1;
+            --border-soft: #2b3039;
+            --accent: #cc9d3b;
+            --shadow: rgba(0, 0, 0, 0.55);
+            --tag-hover-border: rgba(245, 246, 248, 0.32);
+            --tag-hover-text: #f5e3bf;
+            --description-hover: #d9dde8;
+            --placeholder: #6e7381;
+            --favicon-filter: saturate(0) brightness(1.2);
+        }
+
+        @media (prefers-color-scheme: light) {
+            :root {
+                color-scheme: light;
+                --bg: #f2eee6;
+                --surface: #fcfaf6;
+                --surface-strong: #f4efe5;
+                --surface-hover: #efe7d8;
+                --text: #1f2733;
+                --text-strong: #141a22;
+                --text-muted: #6d7684;
+                --border-soft: #d6cbb8;
+                --accent: #9c6c2f;
+                --shadow: rgba(54, 43, 25, 0.12);
+                --tag-hover-border: rgba(31, 39, 51, 0.16);
+                --tag-hover-text: #61431c;
+                --description-hover: #384252;
+                --placeholder: #8e8577;
+                --favicon-filter: saturate(0) brightness(0.78);
+            }
         }
 
         * {

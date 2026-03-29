@@ -42,7 +42,7 @@ export const portalComponentStyles = `
         .link-card img {
             width: 18px;
             height: 18px;
-            filter: saturate(0) brightness(1.35);
+            filter: var(--favicon-filter);
         }
 
         .link-card:hover img {
@@ -63,7 +63,7 @@ export const portalComponentStyles = `
         }
 
         .link-card:hover .link-description {
-            color: rgba(28, 25, 21, 0.72);
+            color: var(--description-hover);
         }
 
         .link-tag-container {
@@ -81,8 +81,8 @@ export const portalComponentStyles = `
         }
 
         .link-card:hover .link-tag {
-            border-color: rgba(28, 25, 21, 0.35);
-            color: #544a3b;
+            border-color: var(--tag-hover-border);
+            color: var(--tag-hover-text);
         }
 
         .filters {
@@ -113,6 +113,6 @@ export const portalComponentStyles = `
         }
 
         .filters input[type="text"]::placeholder {
-            color: #8c8579;
+            color: var(--placeholder);
         }
 `;
