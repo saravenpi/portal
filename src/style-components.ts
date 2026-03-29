@@ -105,6 +105,12 @@ export const portalComponentStyles = `
             font-family: 'Portal Sans', 'Satoshi', 'Avenir Next', 'Segoe UI', 'Helvetica Neue', sans-serif;
         }
 
+        .filters select {
+            -webkit-appearance: none;
+            appearance: none;
+            box-shadow: none;
+        }
+
         .filters input[type="text"]:focus,
         .filters select:focus {
             outline: none;

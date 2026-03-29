@@ -9,7 +9,7 @@ export const portalBaseStyles = `
             --text-strong: #ffffff;
             --text-muted: #9ba3b1;
             --border-soft: #2b3039;
-            --accent: #cc9d3b;
+            --accent: #ffffff;
             --shadow: rgba(0, 0, 0, 0.55);
             --tag-hover-border: rgba(245, 246, 248, 0.32);
             --tag-hover-text: #f5e3bf;
