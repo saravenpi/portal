@@ -1,0 +1,8 @@
+title: Category Map
+
+Development:
+  Repo: https://github.com/example/repo
+  Docs:
+    href: https://docs.example.com
+    desc: Reference docs
+    tags: docs, reference

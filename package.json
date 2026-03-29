@@ -14,6 +14,7 @@
     "js-yaml": "^4.1.0"
   },
   "scripts": {
-    "build": "bun build --compile src/index.ts --outfile portal"
+    "build": "bun build --compile src/index.ts --outfile portal",
+    "test": "sh tests/smoke.sh"
   }
 }

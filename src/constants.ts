@@ -1,0 +1,9 @@
+export const RESERVED_ROOT_KEYS = new Set(['title', 'name', 'description', 'links']);
+export const CATEGORY_CONTAINER_KEYS = ['categories', 'sections', 'projects', 'portals', 'groups'];
+export const CATEGORY_NAME_KEYS = ['category', 'name', 'title', 'section', 'project', 'group'];
+export const CATEGORY_DESCRIPTION_KEYS = ['description', 'desc', 'details', 'note'];
+export const LINK_COLLECTION_KEYS = ['links', 'items', 'entries', 'bookmarks'];
+export const LINK_NAME_KEYS = ['name', 'title', 'label'];
+export const LINK_URL_KEYS = ['url', 'href', 'link', 'to'];
+export const LINK_DESCRIPTION_KEYS = ['description', 'desc', 'details', 'note'];
+export const ROOT_LINKS_CATEGORY = 'Links';

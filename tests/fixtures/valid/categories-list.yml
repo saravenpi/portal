@@ -1,0 +1,10 @@
+title: Category List
+
+categories:
+  - category: Development
+    links:
+      - GitHub -> https://github.com
+      - name: Bun
+        url: https://bun.sh
+  - Design:
+      - https://figma.com
