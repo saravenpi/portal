@@ -331,7 +331,7 @@ class _AboutSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
-        const Text('PORTAL v0.3.0', style: AppTypography.headline),
+        const Text('PORTAL v0.3.1', style: AppTypography.headline),
         const SizedBox(height: AppSpacing.sm),
         const Text(
           'MINIMAL, LOCAL-FIRST BOOKMARKS MANAGER BUILT WITH INVERTED SWISS TYPOGRAPHY.',

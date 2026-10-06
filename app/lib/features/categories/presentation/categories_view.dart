@@ -249,32 +249,37 @@ class CategoriesView extends StatelessWidget {
           Expanded(
             child: categories.isEmpty
                 ? Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        const Icon(
-                          PixelIcons.folder,
-                          size: 48,
-                          color: AppColors.textTertiary,
-                        ),
-                        const SizedBox(height: AppSpacing.md),
-                        const Text(
-                          'NO CATEGORIES DEFINED',
-                          style: AppTypography.title,
-                        ),
-                        const SizedBox(height: AppSpacing.xs),
-                        const Text(
-                          'CREATE A CATEGORY TO GROUP AND ORGANIZE YOUR LINKS.',
-                          style: AppTypography.bodyMuted,
-                        ),
-                        const SizedBox(height: AppSpacing.lg),
-                        PixelButton(
-                          label: 'CREATE CATEGORY',
-                          variant: PixelButtonVariant.primary,
-                          onPressed: () =>
-                              _showAddCategoryDialog(context, vault),
-                        ),
-                      ],
+                    child: Padding(
+                      padding: const EdgeInsets.all(AppSpacing.xl),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          const Icon(
+                            PixelIcons.folder,
+                            size: 48,
+                            color: AppColors.textTertiary,
+                          ),
+                          const SizedBox(height: AppSpacing.md),
+                          const Text(
+                            'NO CATEGORIES DEFINED',
+                            style: AppTypography.title,
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: AppSpacing.xs),
+                          const Text(
+                            'CREATE A CATEGORY TO GROUP AND ORGANIZE YOUR LINKS.',
+                            style: AppTypography.bodyMuted,
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: AppSpacing.lg),
+                          PixelButton(
+                            label: 'CREATE CATEGORY',
+                            variant: PixelButtonVariant.primary,
+                            onPressed: () =>
+                                _showAddCategoryDialog(context, vault),
+                          ),
+                        ],
+                      ),
                     ),
                   )
                 : ListView.separated(

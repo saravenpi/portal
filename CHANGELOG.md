@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.1] - 2026-10-07
+
+### Added
+- Android adaptive icon implementation with full-bleed `#000000` background, safe-zone centered foreground, monochrome themed icon support, and round icon launcher resources.
+- High-contrast `FaviconBadge` component with white background tile ensuring legibility for dark and transparent favicons.
+- Horizontal swipe navigation across sections (links, categories, tags, settings) via `PageView`.
+
+### Fixed
+- Screen border collision on empty tags and categories screens with padding and text centering.
+
 ## [0.3.0] - 2026-10-07
 
 ### Added

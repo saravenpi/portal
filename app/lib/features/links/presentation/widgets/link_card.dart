@@ -9,6 +9,7 @@ import '../../../../core/ui/pixel_icons.dart';
 import '../../../../core/ui/widgets/layout_primitives.dart';
 import '../../../../core/ui/widgets/pixel_button.dart';
 import '../../../../domain/models/link_item.dart';
+import 'favicon_badge.dart';
 
 class LinkCard extends StatefulWidget {
   const LinkCard({
@@ -64,21 +65,9 @@ class _LinkCardState extends State<LinkCard> {
     return uri.host.replaceFirst(RegExp(r'^www\.'), '');
   }
 
-  String? _getFaviconUrl(LinkItem link) {
-    if (link.faviconUrl != null && link.faviconUrl!.trim().isNotEmpty) {
-      return link.faviconUrl!.trim();
-    }
-    final Uri? uri = Uri.tryParse(link.url);
-    if (uri != null && uri.hasScheme && uri.host.isNotEmpty) {
-      return '${uri.scheme}://${uri.host}/favicon.ico';
-    }
-    return null;
-  }
-
   @override
   Widget build(BuildContext context) {
     final String domain = _extractDomain(widget.link.url);
-    final String? faviconUrl = _getFaviconUrl(widget.link);
 
     return MouseRegion(
       onEnter: (_) => setState(() => _hovered = true),
@@ -102,33 +91,11 @@ class _LinkCardState extends State<LinkCard> {
                   children: <Widget>[
                     Row(
                       children: <Widget>[
-                        if (faviconUrl != null && faviconUrl.isNotEmpty)
-                          ClipRRect(
-                            borderRadius: BorderRadius.zero,
-                            child: Image.network(
-                              faviconUrl,
-                              width: 18,
-                              height: 18,
-                              fit: BoxFit.contain,
-                              errorBuilder: (
-                                BuildContext context,
-                                Object error,
-                                StackTrace? stackTrace,
-                              ) {
-                                return const Icon(
-                                  PixelIcons.link,
-                                  size: 18,
-                                  color: AppColors.textSecondary,
-                                );
-                              },
-                            ),
-                          )
-                        else
-                          const Icon(
-                            PixelIcons.link,
-                            size: 18,
-                            color: AppColors.textSecondary,
-                          ),
+                        FaviconBadge(
+                          url: widget.link.url,
+                          faviconUrl: widget.link.faviconUrl,
+                          size: 20,
+                        ),
                         const SizedBox(width: AppSpacing.sm),
                         Expanded(
                           child: Text(

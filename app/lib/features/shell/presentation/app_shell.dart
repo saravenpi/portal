@@ -46,12 +46,14 @@ class _AppShellState extends State<AppShell> {
   ];
 
   int _selected = 0;
+  late final PageController _pageController;
   StreamSubscription<List<SharedMediaFile>>? _intentSub;
   bool _handlingIntent = false;
 
   @override
   void initState() {
     super.initState();
+    _pageController = PageController(initialPage: _selected);
     _initSharingIntent();
   }
 
@@ -87,7 +89,7 @@ class _AppShellState extends State<AppShell> {
         _handlingIntent = false;
         return;
       }
-      setState(() => _selected = 0);
+      _select(0);
       final LinksViewModel vm = context.read<LinksViewModel>();
       final LinkEditorResult? result = await LinkEditorDialog.show(
         context: context,
@@ -108,24 +110,32 @@ class _AppShellState extends State<AppShell> {
   @override
   void dispose() {
     _intentSub?.cancel();
+    _pageController.dispose();
     super.dispose();
   }
 
   void _select(int index) {
     if (index == _selected) return;
     setState(() => _selected = index);
+    if (_pageController.hasClients) {
+      _pageController.animateToPage(
+        index,
+        duration: const Duration(milliseconds: 250),
+        curve: Curves.easeInOut,
+      );
+    }
   }
 
   void _onCategorySelected(String categoryId) {
     final LinksViewModel vm = context.read<LinksViewModel>();
     vm.setCategory(categoryId);
-    setState(() => _selected = 0);
+    _select(0);
   }
 
   void _onTagSelected(String tag) {
     final LinksViewModel vm = context.read<LinksViewModel>();
     vm.setSelectedTag(tag);
-    setState(() => _selected = 0);
+    _select(0);
   }
 
   Future<void> _handleNewLinkKey() async {
@@ -155,8 +165,11 @@ class _AppShellState extends State<AppShell> {
     final String activeFileName =
         vault.activeFilePath.split(Platform.pathSeparator).last;
 
-    final Widget content = IndexedStack(
-      index: _selected,
+    final Widget content = PageView(
+      controller: _pageController,
+      onPageChanged: (int index) {
+        setState(() => _selected = index);
+      },
       children: <Widget>[
         const LinksView(),
         CategoriesView(onSelectCategory: _onCategorySelected),

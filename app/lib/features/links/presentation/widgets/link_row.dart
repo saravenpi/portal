@@ -8,6 +8,7 @@ import '../../../../core/theme/app_typography.dart';
 import '../../../../core/ui/pixel_icons.dart';
 import '../../../../core/ui/widgets/pixel_button.dart';
 import '../../../../domain/models/link_item.dart';
+import 'favicon_badge.dart';
 
 class LinkRow extends StatefulWidget {
   const LinkRow({
@@ -104,10 +105,10 @@ class _LinkRowState extends State<LinkRow> {
                     : widget.onToggleFavorite,
               ),
               const SizedBox(width: AppSpacing.sm),
-              const Icon(
-                PixelIcons.link,
-                size: 16,
-                color: AppColors.textSecondary,
+              FaviconBadge(
+                url: widget.link.url,
+                faviconUrl: widget.link.faviconUrl,
+                size: 18,
               ),
               const SizedBox(width: AppSpacing.sm),
               Expanded(

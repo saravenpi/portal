@@ -113,7 +113,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('LOCAL VAULT AND FILE CONFIGURATION'), findsOneWidget);
-    expect(find.text('PORTAL v0.3.0'), findsOneWidget);
+    expect(find.text('PORTAL v0.3.1'), findsOneWidget);
   });
 
   testWidgets('AppShell renders bottom bar on narrow layout',
@@ -191,5 +191,29 @@ void main() {
       initialCardView: false,
     );
     expect(vmDesktop.isCardView, isFalse);
+  });
+
+  testWidgets('AppShell allows swiping left and right between sections',
+      (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(600, 900);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+
+    await tester.pumpWidget(PortalApp(vault: vault));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(PageView), findsOneWidget);
+
+    await tester.drag(find.byType(PageView), const Offset(-400, 0));
+    await tester.pumpAndSettle();
+    expect(find.text('2 CATEGORIES'), findsOneWidget);
+
+    await tester.drag(find.byType(PageView), const Offset(-400, 0));
+    await tester.pumpAndSettle();
+    expect(find.text('4 TAGS'), findsOneWidget);
+
+    await tester.drag(find.byType(PageView), const Offset(400, 0));
+    await tester.pumpAndSettle();
+    expect(find.text('2 CATEGORIES'), findsOneWidget);
   });
 }

@@ -69,25 +69,30 @@ class TagsView extends StatelessWidget {
           Expanded(
             child: sortedTags.isEmpty
                 ? const Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Icon(
-                          PixelIcons.label,
-                          size: 48,
-                          color: AppColors.textTertiary,
-                        ),
-                        SizedBox(height: AppSpacing.md),
-                        Text(
-                          'NO TAGS RECORDED',
-                          style: AppTypography.title,
-                        ),
-                        SizedBox(height: AppSpacing.xs),
-                        Text(
-                          'TAG YOUR LINKS IN THE EDITOR TO BUILD A TAXONOMY.',
-                          style: AppTypography.bodyMuted,
-                        ),
-                      ],
+                    child: Padding(
+                      padding: EdgeInsets.all(AppSpacing.xl),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Icon(
+                            PixelIcons.label,
+                            size: 48,
+                            color: AppColors.textTertiary,
+                          ),
+                          SizedBox(height: AppSpacing.md),
+                          Text(
+                            'NO TAGS RECORDED',
+                            style: AppTypography.title,
+                            textAlign: TextAlign.center,
+                          ),
+                          SizedBox(height: AppSpacing.xs),
+                          Text(
+                            'TAG YOUR LINKS IN THE EDITOR TO BUILD A TAXONOMY.',
+                            style: AppTypography.bodyMuted,
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
                     ),
                   )
                 : Padding(
