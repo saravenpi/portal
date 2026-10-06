@@ -24,3 +24,6 @@ build: cli-build
 	cd app && flutter build linux --release
 
 test: cli-test app-test
+
+app-apk:
+	./tool/build_apk.sh
