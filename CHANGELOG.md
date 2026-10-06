@@ -5,6 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2026-10-07
+
+### Added
+- Rewrite and migrate YAML vault configuration on vault directory change without leaving old artifacts.
+- Favicon display in link cards with network error fallback.
+- Default to card display mode on mobile platforms.
+
+### Fixed
+- Inconsistent spacing and padding around bottom bar buttons in card display.
+
+### Changed
+- Standardized application display name to "Portal" across Android, desktop, and iOS.
+- Updated application icon across Android, iOS, macOS, Windows, and Linux to a pixel art white circle ring with transparent interior on a solid black background.
+
+## [0.2.0] - 2026-10-07
+
+### Added
+- Native Android/iOS share target integration via `receive_sharing_intent` to add shared links directly from the OS share sheet.
+- Status bar edge-to-edge support with `SafeArea` layout protection and translucent system UI styling.
+- Responsive button controls on narrow mobile screens.
+
+### Removed
+- Removed unused private links flag across CLI and Flutter application.
+
 ## [0.1.0] - 2026-10-07
 
 ### Added

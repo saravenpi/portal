@@ -27,7 +27,6 @@ const renderLink = (link: Link): string => {
                           ${faviconUrl ? `<img src="${escapeHtml(faviconUrl)}" alt="" width="18" height="18">` : ''}
                           <span>${safeName}</span>
                         </div>
-                        ${link.private ? '<span class="private-icon">LOCKED</span>' : ''}
                       </div>
                       ${safeDescription ? `<div class="link-description">${safeDescription}</div>` : ''}
                       ${tagsHtml ? `<div class="link-tag-container">${tagsHtml}</div>` : ''}

@@ -45,7 +45,6 @@ GitHub:
 Dashboard:
   href: https://dashboard.example.com
   desc: Internal admin
-  private: true
 ```
 
 Accepted link metadata keys:
@@ -60,7 +59,6 @@ Accepted link metadata keys:
 - `note`
 - `tags`
 - `tag`
-- `private`
 
 ## Category Block Syntax
 

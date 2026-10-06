@@ -29,10 +29,12 @@ class _SettingsViewState extends State<SettingsView> {
     final String? selectedDirectory =
         await FilePicker.platform.getDirectoryPath();
     if (selectedDirectory != null && selectedDirectory.isNotEmpty) {
-      await vault.setVaultDirectory(selectedDirectory);
+      final bool updated = await vault.setVaultDirectory(selectedDirectory);
       if (mounted) {
         setState(() {
-          _statusMessage = 'VAULT DIRECTORY UPDATED: $selectedDirectory';
+          _statusMessage = updated
+              ? 'VAULT DIRECTORY UPDATED: $selectedDirectory'
+              : 'FAILED TO UPDATE: DIRECTORY NOT FOUND OR NOT WRITABLE';
         });
       }
     }
@@ -329,7 +331,7 @@ class _AboutSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
-        const Text('PORTAL v0.1.0', style: AppTypography.headline),
+        const Text('PORTAL v0.3.0', style: AppTypography.headline),
         const SizedBox(height: AppSpacing.sm),
         const Text(
           'MINIMAL, LOCAL-FIRST BOOKMARKS MANAGER BUILT WITH INVERTED SWISS TYPOGRAPHY.',

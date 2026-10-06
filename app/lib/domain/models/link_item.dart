@@ -10,7 +10,6 @@ class LinkItem {
   final String url;
   final String? description;
   final List<String> tags;
-  final bool isPrivate;
   final bool isFavorite;
   final DateTime? createdAt;
   final String? faviconUrl;
@@ -22,7 +21,6 @@ class LinkItem {
     required this.url,
     this.description,
     this.tags = const <String>[],
-    this.isPrivate = false,
     this.isFavorite = false,
     this.createdAt,
     this.faviconUrl,
@@ -36,7 +34,6 @@ class LinkItem {
     String? description,
     bool clearDescription = false,
     List<String>? tags,
-    bool? isPrivate,
     bool? isFavorite,
     DateTime? createdAt,
     bool clearCreatedAt = false,
@@ -50,7 +47,6 @@ class LinkItem {
       url: url ?? this.url,
       description: clearDescription ? null : (description ?? this.description),
       tags: tags ?? this.tags,
-      isPrivate: isPrivate ?? this.isPrivate,
       isFavorite: isFavorite ?? this.isFavorite,
       createdAt: clearCreatedAt ? null : (createdAt ?? this.createdAt),
       faviconUrl: clearFaviconUrl ? null : (faviconUrl ?? this.faviconUrl),
@@ -65,7 +61,6 @@ class LinkItem {
       'url': url,
       if (description != null) 'description': description,
       if (tags.isNotEmpty) 'tags': tags,
-      if (isPrivate) 'isPrivate': isPrivate,
       if (isFavorite) 'isFavorite': isFavorite,
       if (createdAt != null) 'createdAt': createdAt!.toIso8601String(),
       if (faviconUrl != null) 'faviconUrl': faviconUrl,
@@ -106,9 +101,6 @@ class LinkItem {
     final DateTime? parsedCreatedAt =
         rawCreatedAt is String ? DateTime.tryParse(rawCreatedAt) : null;
 
-    final dynamic rawPrivate = map['isPrivate'] ?? map['private'];
-    final bool parsedPrivate = rawPrivate is bool ? rawPrivate : false;
-
     final dynamic rawFavorite =
         map['isFavorite'] ?? map['favorite'] ?? map['starred'];
     final bool parsedFavorite = rawFavorite is bool ? rawFavorite : false;
@@ -120,7 +112,6 @@ class LinkItem {
       url: (map['url'] as String?) ?? '',
       description: map['description'] as String?,
       tags: parsedTags,
-      isPrivate: parsedPrivate,
       isFavorite: parsedFavorite,
       createdAt: parsedCreatedAt,
       faviconUrl: (map['faviconUrl'] ?? map['favicon']) as String?,
@@ -136,7 +127,6 @@ class LinkItem {
         name != other.name ||
         url != other.url ||
         description != other.description ||
-        isPrivate != other.isPrivate ||
         isFavorite != other.isFavorite ||
         createdAt != other.createdAt ||
         faviconUrl != other.faviconUrl ||
@@ -157,7 +147,6 @@ class LinkItem {
         url,
         description,
         Object.hashAll(tags),
-        isPrivate,
         isFavorite,
         createdAt,
         faviconUrl,
@@ -166,6 +155,6 @@ class LinkItem {
 
   @override
   String toString() {
-    return 'LinkItem(id: $id, name: $name, url: $url, description: $description, tags: $tags, isPrivate: $isPrivate, isFavorite: $isFavorite, createdAt: $createdAt, faviconUrl: $faviconUrl, health: $health)';
+    return 'LinkItem(id: $id, name: $name, url: $url, description: $description, tags: $tags, isFavorite: $isFavorite, createdAt: $createdAt, faviconUrl: $faviconUrl, health: $health)';
   }
 }

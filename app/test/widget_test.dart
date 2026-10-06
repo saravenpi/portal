@@ -7,6 +7,7 @@ import 'package:portal/data/storage/portal_vault.dart';
 import 'package:portal/domain/models/category.dart';
 import 'package:portal/domain/models/link_item.dart';
 import 'package:portal/domain/models/portal_config.dart';
+import 'package:portal/features/links/presentation/links_view_model.dart';
 
 void main() {
   late Directory tempDir;
@@ -112,7 +113,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('LOCAL VAULT AND FILE CONFIGURATION'), findsOneWidget);
-    expect(find.text('PORTAL v0.1.0'), findsOneWidget);
+    expect(find.text('PORTAL v0.3.0'), findsOneWidget);
   });
 
   testWidgets('AppShell renders bottom bar on narrow layout',
@@ -176,5 +177,19 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(ListView), findsOneWidget);
+  });
+
+  test('LinksViewModel initializes with card view when requested or on mobile', () {
+    final LinksViewModel vmMobile = LinksViewModel(
+      vault: vault,
+      initialCardView: true,
+    );
+    expect(vmMobile.isCardView, isTrue);
+
+    final LinksViewModel vmDesktop = LinksViewModel(
+      vault: vault,
+      initialCardView: false,
+    );
+    expect(vmDesktop.isCardView, isFalse);
   });
 }

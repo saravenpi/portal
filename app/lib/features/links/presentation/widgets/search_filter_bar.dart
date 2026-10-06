@@ -19,8 +19,6 @@ class SearchFilterBar extends StatefulWidget {
     required this.onTagChanged,
     required this.favoritesOnly,
     required this.onFavoritesOnlyChanged,
-    required this.includePrivate,
-    required this.onIncludePrivateChanged,
     required this.isCardView,
     required this.onDensityChanged,
     required this.onAddLink,
@@ -35,8 +33,6 @@ class SearchFilterBar extends StatefulWidget {
   final ValueChanged<String?> onTagChanged;
   final bool favoritesOnly;
   final ValueChanged<bool> onFavoritesOnlyChanged;
-  final bool includePrivate;
-  final ValueChanged<bool> onIncludePrivateChanged;
   final bool isCardView;
   final ValueChanged<bool> onDensityChanged;
   final VoidCallback onAddLink;
@@ -134,12 +130,18 @@ class _SearchFilterBarState extends State<SearchFilterBar> {
                 onPressed: () => widget.onDensityChanged(!widget.isCardView),
               ),
               const SizedBox(width: AppSpacing.sm),
-              PixelButton(
-                label: 'ADD LINK',
-                icon: PixelIcons.plus,
-                variant: PixelButtonVariant.primary,
-                onPressed: widget.onAddLink,
-              ),
+              MediaQuery.sizeOf(context).width < 420
+                  ? PixelIconButton(
+                      icon: PixelIcons.plus,
+                      tooltip: 'ADD LINK',
+                      onPressed: widget.onAddLink,
+                    )
+                  : PixelButton(
+                      label: 'ADD LINK',
+                      icon: PixelIcons.plus,
+                      variant: PixelButtonVariant.primary,
+                      onPressed: widget.onAddLink,
+                    ),
             ],
           ),
           const SizedBox(height: AppSpacing.sm),
@@ -217,15 +219,6 @@ class _SearchFilterBarState extends State<SearchFilterBar> {
                   onToggle: () =>
                       widget.onFavoritesOnlyChanged(!widget.favoritesOnly),
                 ),
-                const SizedBox(width: AppSpacing.sm),
-                _FilterChipToggle(
-                  label: 'PRIVATE',
-                  icon: PixelIcons.lock,
-                  active: widget.includePrivate,
-                  activeColor: AppColors.warning,
-                  onToggle: () =>
-                      widget.onIncludePrivateChanged(!widget.includePrivate),
-                ),
                 if (widget.selectedTag != null) ...<Widget>[
                   const SizedBox(width: AppSpacing.sm),
                   Container(
@@ -266,7 +259,6 @@ class _SearchFilterBarState extends State<SearchFilterBar> {
                 if (selectedCategory != null ||
                     widget.selectedTag != null ||
                     widget.favoritesOnly ||
-                    !widget.includePrivate ||
                     _controller.text.isNotEmpty) ...<Widget>[
                   const SizedBox(width: AppSpacing.sm),
                   PixelButton(
@@ -278,7 +270,6 @@ class _SearchFilterBarState extends State<SearchFilterBar> {
                       widget.onCategoryChanged(null);
                       widget.onTagChanged(null);
                       widget.onFavoritesOnlyChanged(false);
-                      widget.onIncludePrivateChanged(true);
                     },
                   ),
                 ],

@@ -49,14 +49,6 @@ export const portalComponentStyles = `
             filter: none;
         }
 
-        .private-icon {
-            font-size: 0.85rem;
-            border: 1px solid currentColor;
-            border-radius: 999px;
-            padding: 3px 8px;
-            white-space: nowrap;
-        }
-
         .link-description {
             font-size: 1rem;
             color: var(--text-muted);

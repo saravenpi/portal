@@ -219,9 +219,6 @@ class YamlCodec {
           link.tags.map(_escapeYamlString).join(', ');
       buffer.writeln('$indent  tags: [$tagsFormatted]');
     }
-    if (link.isPrivate) {
-      buffer.writeln('$indent  private: true');
-    }
     if (link.isFavorite) {
       buffer.writeln('$indent  favorite: true');
     }
@@ -437,8 +434,6 @@ class YamlCodec {
         : const <String>[];
     final String? desc =
         record != null ? _getFirstString(record, linkDescriptionKeys) : null;
-    final bool isPrivate = record != null &&
-        (record['private'] == true || record['isPrivate'] == true);
     final bool isFavorite = record != null &&
         (record['favorite'] == true ||
             record['isFavorite'] == true ||
@@ -457,7 +452,6 @@ class YamlCodec {
       url: normalizedUrl,
       description: desc,
       tags: tags,
-      isPrivate: isPrivate,
       isFavorite: isFavorite,
       createdAt: createdAt,
       faviconUrl: favicon,

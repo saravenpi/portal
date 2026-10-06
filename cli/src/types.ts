@@ -1,7 +1,6 @@
 export interface Link {
   name: string;
   url: string;
-  private?: boolean;
   tags?: string[];
   description?: string;
 }

@@ -1,8 +1,11 @@
+import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimens.dart';
@@ -43,6 +46,70 @@ class _AppShellState extends State<AppShell> {
   ];
 
   int _selected = 0;
+  StreamSubscription<List<SharedMediaFile>>? _intentSub;
+  bool _handlingIntent = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _initSharingIntent();
+  }
+
+  void _initSharingIntent() {
+    if (kIsWeb) return;
+    if (!Platform.isAndroid && !Platform.isIOS) return;
+
+    _intentSub = ReceiveSharingIntent.instance.getMediaStream().listen(
+      _handleSharedMedia,
+      onError: (Object err) {},
+    );
+
+    ReceiveSharingIntent.instance.getInitialMedia().then((List<SharedMediaFile> value) {
+      if (value.isNotEmpty) {
+        _handleSharedMedia(value);
+        ReceiveSharingIntent.instance.reset();
+      }
+    }).catchError((Object _) {});
+  }
+
+  void _handleSharedMedia(List<SharedMediaFile> files) {
+    if (files.isEmpty || _handlingIntent) return;
+    final String raw = files.first.path.trim();
+    if (raw.isEmpty) return;
+
+    final RegExp urlRegex = RegExp(r'https?://[^\s]+');
+    final Match? match = urlRegex.firstMatch(raw);
+    final String targetUrl = match != null ? match.group(0)! : raw;
+
+    _handlingIntent = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (!mounted) {
+        _handlingIntent = false;
+        return;
+      }
+      setState(() => _selected = 0);
+      final LinksViewModel vm = context.read<LinksViewModel>();
+      final LinkEditorResult? result = await LinkEditorDialog.show(
+        context: context,
+        categories: vm.categories,
+        initialCategoryId: vm.filter.categoryId,
+        initialUrl: targetUrl,
+      );
+      if (result != null) {
+        await vm.addLink(
+          categoryId: result.categoryId,
+          link: result.link,
+        );
+      }
+      _handlingIntent = false;
+    });
+  }
+
+  @override
+  void dispose() {
+    _intentSub?.cancel();
+    super.dispose();
+  }
 
   void _select(int index) {
     if (index == _selected) return;
@@ -119,16 +186,19 @@ class _AppShellState extends State<AppShell> {
             ),
           )
         : Scaffold(
-            body: Column(
-              children: <Widget>[
-                Expanded(child: content),
-                const Rule(),
-                _BottomBar(
-                  destinations: _destinations,
-                  selected: _selected,
-                  onSelect: _select,
-                ),
-              ],
+            body: SafeArea(
+              bottom: false,
+              child: Column(
+                children: <Widget>[
+                  Expanded(child: content),
+                  const Rule(),
+                  _BottomBar(
+                    destinations: _destinations,
+                    selected: _selected,
+                    onSelect: _select,
+                  ),
+                ],
+              ),
             ),
           );
 

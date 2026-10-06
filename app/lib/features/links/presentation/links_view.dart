@@ -113,8 +113,6 @@ class LinksView extends StatelessWidget {
             onTagChanged: vm.setSelectedTag,
             favoritesOnly: vm.filter.favoritesOnly,
             onFavoritesOnlyChanged: vm.setFavoritesOnly,
-            includePrivate: vm.filter.includePrivate,
-            onIncludePrivateChanged: vm.setIncludePrivate,
             isCardView: vm.isCardView,
             onDensityChanged: vm.setDensity,
             onAddLink: () => _openAddLink(context, vm),

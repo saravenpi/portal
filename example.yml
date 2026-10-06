@@ -9,9 +9,6 @@ Development:
   Monitoring:
     url: https://monitor.example.com
     tags: [ops, monitoring]
-  PrivateLink:
-    url: https://private.example.com
-    private: true
 
 categories:
   - category: Projects

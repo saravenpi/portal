@@ -104,12 +104,10 @@ class _LinkRowState extends State<LinkRow> {
                     : widget.onToggleFavorite,
               ),
               const SizedBox(width: AppSpacing.sm),
-              Icon(
-                widget.link.isPrivate ? PixelIcons.lock : PixelIcons.link,
+              const Icon(
+                PixelIcons.link,
                 size: 16,
-                color: widget.link.isPrivate
-                    ? AppColors.warning
-                    : AppColors.textSecondary,
+                color: AppColors.textSecondary,
               ),
               const SizedBox(width: AppSpacing.sm),
               Expanded(

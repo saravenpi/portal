@@ -5,21 +5,16 @@ class LinkFilter {
   final String? categoryId;
   final String? selectedTag;
   final bool favoritesOnly;
-  final bool includePrivate;
 
   const LinkFilter({
     this.searchQuery = '',
     this.categoryId,
     this.selectedTag,
     this.favoritesOnly = false,
-    this.includePrivate = true,
   });
 
   bool matches(LinkItem link, {String? categoryId}) {
     if (favoritesOnly && !link.isFavorite) {
-      return false;
-    }
-    if (!includePrivate && link.isPrivate) {
       return false;
     }
     if (this.categoryId != null &&
@@ -59,7 +54,6 @@ class LinkFilter {
     String? selectedTag,
     bool clearSelectedTag = false,
     bool? favoritesOnly,
-    bool? includePrivate,
   }) {
     return LinkFilter(
       searchQuery: searchQuery ?? this.searchQuery,
@@ -67,7 +61,6 @@ class LinkFilter {
       selectedTag:
           clearSelectedTag ? null : (selectedTag ?? this.selectedTag),
       favoritesOnly: favoritesOnly ?? this.favoritesOnly,
-      includePrivate: includePrivate ?? this.includePrivate,
     );
   }
 
@@ -78,8 +71,7 @@ class LinkFilter {
     return searchQuery == other.searchQuery &&
         categoryId == other.categoryId &&
         selectedTag == other.selectedTag &&
-        favoritesOnly == other.favoritesOnly &&
-        includePrivate == other.includePrivate;
+        favoritesOnly == other.favoritesOnly;
   }
 
   @override
@@ -88,11 +80,10 @@ class LinkFilter {
         categoryId,
         selectedTag,
         favoritesOnly,
-        includePrivate,
       );
 
   @override
   String toString() {
-    return 'LinkFilter(searchQuery: $searchQuery, categoryId: $categoryId, selectedTag: $selectedTag, favoritesOnly: $favoritesOnly, includePrivate: $includePrivate)';
+    return 'LinkFilter(searchQuery: $searchQuery, categoryId: $categoryId, selectedTag: $selectedTag, favoritesOnly: $favoritesOnly)';
   }
 }

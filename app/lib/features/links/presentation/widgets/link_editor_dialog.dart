@@ -17,12 +17,14 @@ class LinkEditorDialog extends StatefulWidget {
     required this.categories,
     this.initialLink,
     this.initialCategoryId,
+    this.initialUrl,
     this.metadataFetcher = const MetadataFetcher(),
   });
 
   final List<Category> categories;
   final LinkItem? initialLink;
   final String? initialCategoryId;
+  final String? initialUrl;
   final MetadataFetcher metadataFetcher;
 
   static Future<LinkEditorResult?> show({
@@ -30,6 +32,7 @@ class LinkEditorDialog extends StatefulWidget {
     required List<Category> categories,
     LinkItem? initialLink,
     String? initialCategoryId,
+    String? initialUrl,
     MetadataFetcher? metadataFetcher,
   }) {
     return showDialog<LinkEditorResult>(
@@ -39,6 +42,7 @@ class LinkEditorDialog extends StatefulWidget {
         categories: categories,
         initialLink: initialLink,
         initialCategoryId: initialCategoryId,
+        initialUrl: initialUrl,
         metadataFetcher: metadataFetcher ?? const MetadataFetcher(),
       ),
     );
@@ -66,7 +70,7 @@ class _LinkEditorDialogState extends State<LinkEditorDialog> {
 
   late String _selectedCategoryId;
   late bool _isFavorite;
-  late bool _isPrivate;
+  String? _faviconUrl;
   bool _isFetching = false;
   String? _error;
 
@@ -74,7 +78,8 @@ class _LinkEditorDialogState extends State<LinkEditorDialog> {
   void initState() {
     super.initState();
     final LinkItem? initial = widget.initialLink;
-    _urlController = TextEditingController(text: initial?.url ?? '');
+    final String startingUrl = initial?.url ?? widget.initialUrl ?? '';
+    _urlController = TextEditingController(text: startingUrl);
     _nameController = TextEditingController(text: initial?.name ?? '');
     _descController = TextEditingController(text: initial?.description ?? '');
     _tagsController =
@@ -83,9 +88,16 @@ class _LinkEditorDialogState extends State<LinkEditorDialog> {
     _selectedCategoryId = widget.initialCategoryId ??
         (widget.categories.isNotEmpty ? widget.categories.first.id : 'Default');
     _isFavorite = initial?.isFavorite ?? false;
-    _isPrivate = initial?.isPrivate ?? false;
+    _faviconUrl = initial?.faviconUrl;
 
     _urlController.addListener(_onUrlChanged);
+    if (startingUrl.isNotEmpty && (initial?.name.isEmpty ?? true)) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          _fetchMetadataForUrl(startingUrl);
+        }
+      });
+    }
   }
 
   String _lastFetchedUrl = '';
@@ -112,6 +124,9 @@ class _LinkEditorDialogState extends State<LinkEditorDialog> {
 
     setState(() {
       _isFetching = false;
+      if (result.faviconUrl != null && result.faviconUrl!.isNotEmpty) {
+        _faviconUrl = result.faviconUrl;
+      }
       if (_nameController.text.trim().isEmpty &&
           result.title != null &&
           result.title!.isNotEmpty) {
@@ -161,7 +176,7 @@ class _LinkEditorDialogState extends State<LinkEditorDialog> {
           clearDescription: _descController.text.trim().isEmpty,
           tags: tags,
           isFavorite: _isFavorite,
-          isPrivate: _isPrivate,
+          faviconUrl: _faviconUrl,
         ) ??
         LinkItem(
           id: '${DateTime.now().microsecondsSinceEpoch}_${url.hashCode}',
@@ -172,7 +187,7 @@ class _LinkEditorDialogState extends State<LinkEditorDialog> {
               : null,
           tags: tags,
           isFavorite: _isFavorite,
-          isPrivate: _isPrivate,
+          faviconUrl: _faviconUrl,
           createdAt: DateTime.now(),
         );
 
@@ -303,31 +318,6 @@ class _LinkEditorDialogState extends State<LinkEditorDialog> {
                       style: AppTypography.captionStrong.copyWith(
                         color: _isFavorite
                             ? AppColors.accent
-                            : AppColors.textSecondary,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: AppSpacing.lg),
-              InkWell(
-                onTap: () => setState(() => _isPrivate = !_isPrivate),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Icon(
-                      _isPrivate ? PixelIcons.lock : PixelIcons.lock,
-                      size: 16,
-                      color: _isPrivate
-                          ? AppColors.warning
-                          : AppColors.textTertiary,
-                    ),
-                    const SizedBox(width: AppSpacing.xs),
-                    Text(
-                      'PRIVATE',
-                      style: AppTypography.captionStrong.copyWith(
-                        color: _isPrivate
-                            ? AppColors.warning
                             : AppColors.textSecondary,
                       ),
                     ),

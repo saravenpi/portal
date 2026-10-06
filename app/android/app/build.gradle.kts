@@ -15,7 +15,7 @@ if (hasReleaseSigning) {
 
 android {
     namespace = "com.saravenpi.portal"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = 37
     ndkVersion = flutter.ndkVersion
 
     compileOptions {

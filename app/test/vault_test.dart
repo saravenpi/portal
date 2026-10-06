@@ -28,7 +28,6 @@ void main() {
                 url: 'https://github.com',
                 tags: <String>['git', 'dev'],
                 isFavorite: false,
-                isPrivate: false,
               ),
             ],
           ),
@@ -89,7 +88,6 @@ void main() {
       url: 'https://github.example.com',
       tags: <String>['enterprise'],
       isFavorite: true,
-      isPrivate: true,
     );
 
     await vault.updateLink(categoryId: 'cat_dev', link: updated);
@@ -99,7 +97,6 @@ void main() {
     expect(current.name, 'GitHub Enterprise');
     expect(current.url, 'https://github.example.com');
     expect(current.isFavorite, isTrue);
-    expect(current.isPrivate, isTrue);
   });
 
   test('deleteLink removes target link', () async {
@@ -155,18 +152,12 @@ void main() {
     expect(vault.categories.length, 1);
   });
 
-  test('toggleFavorite and togglePrivate flip booleans', () async {
+  test('toggleFavorite flips boolean', () async {
     await vault.toggleFavorite(categoryId: 'cat_dev', linkId: 'link_gh');
     expect(vault.allLinks.first.isFavorite, isTrue);
 
     await vault.toggleFavorite(categoryId: 'cat_dev', linkId: 'link_gh');
     expect(vault.allLinks.first.isFavorite, isFalse);
-
-    await vault.togglePrivate(categoryId: 'cat_dev', linkId: 'link_gh');
-    expect(vault.allLinks.first.isPrivate, isTrue);
-
-    await vault.togglePrivate(categoryId: 'cat_dev', linkId: 'link_gh');
-    expect(vault.allLinks.first.isPrivate, isFalse);
   });
 
   test('exportHtml generates clean html string and file', () async {
@@ -199,5 +190,46 @@ void main() {
     const YamlCodec codec = YamlCodec();
     final PortalConfig parsed = codec.decode(await mainFile.readAsString());
     expect(parsed.allLinks.any((LinkItem l) => l.name == 'Atomic'), isTrue);
+  });
+
+  test('setVaultDirectory rewrites yaml to new directory and removes old artifacts', () async {
+    await vault.load();
+    final Directory newDir = await Directory.systemTemp.createTemp('portal_new_vault_');
+    try {
+      final File oldFile = File(vault.activeFilePath);
+      expect(oldFile.existsSync(), isTrue);
+
+      final bool moved = await vault.setVaultDirectory(newDir.path);
+      expect(moved, isTrue);
+      expect(vault.vaultDirectory, newDir.path);
+
+      final File newFile = File(vault.activeFilePath);
+      expect(newFile.existsSync(), isTrue);
+      expect(oldFile.existsSync(), isFalse);
+
+      expect(vault.allLinks.isNotEmpty, isTrue);
+      expect(vault.categories.isNotEmpty, isTrue);
+
+      const YamlCodec codec = YamlCodec();
+      final PortalConfig parsed = codec.decode(await newFile.readAsString());
+      expect(parsed.allLinks.isNotEmpty, isTrue);
+      expect(parsed.allLinks.first.name, 'GitHub');
+    } finally {
+      if (newDir.existsSync()) {
+        await newDir.delete(recursive: true);
+      }
+    }
+  });
+
+  test('setVaultDirectory rejects non-existent directory without touching old files', () async {
+    await vault.load();
+    final String oldPath = vault.activeFilePath;
+    final File oldFile = File(oldPath);
+    expect(oldFile.existsSync(), isTrue);
+
+    final bool moved = await vault.setVaultDirectory('/non/existent/path/portal_12345');
+    expect(moved, isFalse);
+    expect(vault.vaultDirectory, tempDir.path);
+    expect(oldFile.existsSync(), isTrue);
   });
 }

@@ -77,7 +77,7 @@ export const parseArgs = (args: string[] = process.argv.slice(2)): CliArgs => {
     switch (arg) {
       case '-v':
       case '--version':
-        console.log('portal 0.1.0');
+        console.log('portal 0.3.0');
         process.exit(0);
       case '-h':
       case '--help':

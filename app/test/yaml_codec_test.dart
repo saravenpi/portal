@@ -37,7 +37,6 @@ Development:
     href: https://docs.example.com
     desc: Reference docs
     tags: docs, reference
-    private: true
 ''';
 
       final PortalConfig config = codec.decode(yaml);
@@ -57,7 +56,6 @@ Development:
       expect(docs.url, 'https://docs.example.com');
       expect(docs.description, 'Reference docs');
       expect(docs.tags, <String>['docs', 'reference']);
-      expect(docs.isPrivate, isTrue);
     });
 
     test('parses category list and shorthand formats', () {
@@ -146,14 +144,12 @@ links:
                 url: 'https://github.com',
                 description: 'Code repository',
                 tags: <String>['git', 'code'],
-                isPrivate: false,
                 isFavorite: true,
               ),
               LinkItem(
                 id: 'link_2',
                 name: 'Private Console',
                 url: 'https://console.internal',
-                isPrivate: true,
                 isFavorite: false,
               ),
             ],
@@ -178,12 +174,10 @@ links:
       expect(l1.description, 'Code repository');
       expect(l1.tags, <String>['git', 'code']);
       expect(l1.isFavorite, isTrue);
-      expect(l1.isPrivate, isFalse);
 
       final LinkItem l2 = cat.links[1];
       expect(l2.name, 'Private Console');
       expect(l2.url, 'https://console.internal');
-      expect(l2.isPrivate, isTrue);
       expect(l2.isFavorite, isFalse);
     });
   });

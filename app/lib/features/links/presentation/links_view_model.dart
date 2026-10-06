@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart' hide Category;
 
 import '../../../data/storage/portal_vault.dart';
@@ -18,13 +20,17 @@ class CategorizedLink {
 }
 
 class LinksViewModel extends ChangeNotifier {
-  LinksViewModel({required this.vault}) {
+  LinksViewModel({
+    required this.vault,
+    bool? initialCardView,
+  }) : _isCardView = initialCardView ??
+            (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
     vault.addListener(_onVaultChanged);
   }
 
   final PortalVault vault;
   LinkFilter _filter = const LinkFilter();
-  bool _isCardView = false;
+  bool _isCardView;
 
   LinkFilter get filter => _filter;
   bool get isCardView => _isCardView;
@@ -84,12 +90,6 @@ class LinksViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setIncludePrivate(bool value) {
-    if (_filter.includePrivate == value) return;
-    _filter = _filter.copyWith(includePrivate: value);
-    notifyListeners();
-  }
-
   void setDensity(bool isCardView) {
     if (_isCardView == isCardView) return;
     _isCardView = isCardView;
@@ -127,13 +127,6 @@ class LinksViewModel extends ChangeNotifier {
     required String linkId,
   }) async {
     await vault.toggleFavorite(categoryId: categoryId, linkId: linkId);
-  }
-
-  Future<void> togglePrivate({
-    required String categoryId,
-    required String linkId,
-  }) async {
-    await vault.togglePrivate(categoryId: categoryId, linkId: linkId);
   }
 
   void _onVaultChanged() {

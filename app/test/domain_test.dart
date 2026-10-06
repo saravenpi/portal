@@ -18,7 +18,6 @@ void main() {
         url: 'https://example.com',
         description: 'A test link',
         tags: const <String>['test', 'portal'],
-        isPrivate: true,
         isFavorite: true,
         createdAt: now,
         faviconUrl: 'https://example.com/favicon.ico',
@@ -33,7 +32,6 @@ void main() {
       expect(fromMap.url, item.url);
       expect(fromMap.description, item.description);
       expect(fromMap.tags, item.tags);
-      expect(fromMap.isPrivate, item.isPrivate);
       expect(fromMap.isFavorite, item.isFavorite);
       expect(fromMap.health, item.health);
       expect(fromMap.faviconUrl, item.faviconUrl);
@@ -80,7 +78,6 @@ void main() {
       url: 'https://flutter.dev',
       tags: <String>['flutter', 'mobile'],
       isFavorite: true,
-      isPrivate: false,
     );
 
     const LinkItem link2 = LinkItem(
@@ -89,10 +86,9 @@ void main() {
       url: 'https://vault.internal',
       tags: <String>['security'],
       isFavorite: false,
-      isPrivate: true,
     );
 
-    test('matches search query, tags, favorites, and privacy', () {
+    test('matches search query, tags, and favorites', () {
       const LinkFilter filterAll = LinkFilter();
       expect(filterAll.matches(link1), isTrue);
       expect(filterAll.matches(link2), isTrue);
@@ -108,10 +104,6 @@ void main() {
       const LinkFilter filterFavorites = LinkFilter(favoritesOnly: true);
       expect(filterFavorites.matches(link1), isTrue);
       expect(filterFavorites.matches(link2), isFalse);
-
-      const LinkFilter filterNoPrivate = LinkFilter(includePrivate: false);
-      expect(filterNoPrivate.matches(link1), isTrue);
-      expect(filterNoPrivate.matches(link2), isFalse);
     });
   });
 

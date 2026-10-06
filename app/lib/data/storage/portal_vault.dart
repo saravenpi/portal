@@ -81,11 +81,69 @@ class PortalVault extends ChangeNotifier {
     await _restartWatcher();
   }
 
-  Future<void> setVaultDirectory(String path) async {
+  bool _isWritableDirectory(Directory dir) {
+    try {
+      final File probe = File('${dir.path}/.portal_write_test_${DateTime.now().microsecondsSinceEpoch}');
+      probe.writeAsStringSync('');
+      probe.deleteSync();
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  Future<bool> setVaultDirectory(String path) async {
+    final Directory newDir = Directory(path);
+    if (!newDir.existsSync() || !_isWritableDirectory(newDir)) {
+      return false;
+    }
+
+    if (path == _vaultDirectory) {
+      return true;
+    }
+
     await flush();
+
+    final String oldFilePath = activeFilePath;
+    final File oldFile = File(oldFilePath);
+    final File oldTmpFile = File('$oldFilePath.tmp');
+
+    if (_lastWrittenContent == null && oldFile.existsSync()) {
+      try {
+        final String content = await oldFile.readAsString();
+        _config = _codec.decode(content);
+      } catch (_) {}
+    }
+
     _vaultDirectory = path;
+    final String newFilePath = activeFilePath;
+
+    final String encoded = _codec.encode(_config);
+    final File newTmpFile = File('$newFilePath.tmp');
+    await newTmpFile.writeAsString(encoded, flush: true);
+    if (newTmpFile.existsSync()) {
+      await newTmpFile.rename(newFilePath);
+    } else {
+      await File(newFilePath).writeAsString(encoded, flush: true);
+    }
+    _lastWrittenContent = encoded;
+
+    if (oldFilePath != newFilePath) {
+      if (oldFile.existsSync()) {
+        try {
+          oldFile.deleteSync();
+        } catch (_) {}
+      }
+      if (oldTmpFile.existsSync()) {
+        try {
+          oldTmpFile.deleteSync();
+        } catch (_) {}
+      }
+    }
+
     await _restartWatcher();
-    await load();
+    notifyListeners();
+    return true;
   }
 
   Future<void> setActiveFile(String fileName) async {
@@ -262,31 +320,6 @@ class PortalVault extends ChangeNotifier {
         final List<LinkItem> updatedLinks = cat.links.map((LinkItem existing) {
           if (existing.id == linkId) {
             return existing.copyWith(isFavorite: !existing.isFavorite);
-          }
-          return existing;
-        }).toList();
-        updatedCategories.add(cat.copyWith(links: updatedLinks));
-      } else {
-        updatedCategories.add(cat);
-      }
-    }
-
-    _config = _config.copyWith(categories: updatedCategories);
-    notifyListeners();
-    _scheduleWrite();
-  }
-
-  Future<void> togglePrivate({
-    required String categoryId,
-    required String linkId,
-  }) async {
-    final List<Category> updatedCategories = <Category>[];
-
-    for (final Category cat in _config.categories) {
-      if (cat.id == categoryId) {
-        final List<LinkItem> updatedLinks = cat.links.map((LinkItem existing) {
-          if (existing.id == linkId) {
-            return existing.copyWith(isPrivate: !existing.isPrivate);
           }
           return existing;
         }).toList();

@@ -231,12 +231,18 @@ class CategoriesView extends StatelessWidget {
                   style: AppTypography.title,
                 ),
                 const Spacer(),
-                PixelButton(
-                  label: 'ADD CATEGORY',
-                  icon: PixelIcons.plus,
-                  variant: PixelButtonVariant.primary,
-                  onPressed: () => _showAddCategoryDialog(context, vault),
-                ),
+                MediaQuery.sizeOf(context).width < 420
+                    ? PixelIconButton(
+                        icon: PixelIcons.plus,
+                        tooltip: 'ADD CATEGORY',
+                        onPressed: () => _showAddCategoryDialog(context, vault),
+                      )
+                    : PixelButton(
+                        label: 'ADD CATEGORY',
+                        icon: PixelIcons.plus,
+                        variant: PixelButtonVariant.primary,
+                        onPressed: () => _showAddCategoryDialog(context, vault),
+                      ),
               ],
             ),
           ),

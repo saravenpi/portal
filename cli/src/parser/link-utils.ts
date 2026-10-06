@@ -17,7 +17,6 @@ export const isMetadataOnlyKey = (key: string): boolean =>
   LINK_NAME_KEYS.includes(key) ||
   LINK_URL_KEYS.includes(key) ||
   LINK_DESCRIPTION_KEYS.includes(key) ||
-  key === 'private' ||
   key === 'tags' ||
   key === 'tag';
 
@@ -102,7 +101,6 @@ export const parseLinkShorthand = (
 export const toLink = (name: string, url: string, record?: InputRecord): Link => ({
   name: name.trim(),
   url: normalizeUrl(url),
-  private: typeof record?.private === 'boolean' ? record.private : undefined,
   tags: normalizeTags(record?.tags ?? record?.tag),
   description: getFirstString(record || {}, LINK_DESCRIPTION_KEYS),
 });

@@ -64,9 +64,21 @@ class _LinkCardState extends State<LinkCard> {
     return uri.host.replaceFirst(RegExp(r'^www\.'), '');
   }
 
+  String? _getFaviconUrl(LinkItem link) {
+    if (link.faviconUrl != null && link.faviconUrl!.trim().isNotEmpty) {
+      return link.faviconUrl!.trim();
+    }
+    final Uri? uri = Uri.tryParse(link.url);
+    if (uri != null && uri.hasScheme && uri.host.isNotEmpty) {
+      return '${uri.scheme}://${uri.host}/favicon.ico';
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     final String domain = _extractDomain(widget.link.url);
+    final String? faviconUrl = _getFaviconUrl(widget.link);
 
     return MouseRegion(
       onEnter: (_) => setState(() => _hovered = true),
@@ -79,159 +91,189 @@ class _LinkCardState extends State<LinkCard> {
             width: AppSpacing.hairline,
           ),
         ),
-        padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Row(
-              children: <Widget>[
-                Icon(
-                  widget.link.isPrivate ? PixelIcons.lock : PixelIcons.link,
-                  size: 18,
-                  color: widget.link.isPrivate
-                      ? AppColors.warning
-                      : AppColors.textSecondary,
-                ),
-                const SizedBox(width: AppSpacing.sm),
-                Expanded(
-                  child: Text(
-                    widget.link.name.isNotEmpty
-                        ? widget.link.name
-                        : widget.link.url,
-                    style: AppTypography.title,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                if (widget.link.health != LinkHealth.unknown) ...<Widget>[
-                  const SizedBox(width: AppSpacing.xs),
-                  Container(
-                    width: 8,
-                    height: 8,
-                    decoration: BoxDecoration(
-                      color: widget.link.health == LinkHealth.healthy
-                          ? AppColors.success
-                          : AppColors.danger,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                ],
-                const SizedBox(width: AppSpacing.xs),
-                PixelIconButton(
-                  icon: widget.link.isFavorite
-                      ? PixelIcons.heart
-                      : PixelIcons.heart,
-                  color: widget.link.isFavorite
-                      ? AppColors.accent
-                      : AppColors.textTertiary,
-                  size: 32,
-                  tooltip: widget.link.isFavorite
-                      ? 'REMOVE FAVORITE'
-                      : 'FAVORITE',
-                  onPressed: widget.onToggleFavorite,
-                ),
-              ],
-            ),
-            const SizedBox(height: AppSpacing.xs),
-            Row(
-              children: <Widget>[
-                Flexible(
-                  child: Text(
-                    domain.toUpperCase(),
-                    style: AppTypography.caption,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.sm),
-                Flexible(
-                  child: Text(
-                    '// ${widget.categoryName.toUpperCase()}',
-                    style: AppTypography.caption.copyWith(
-                      color: AppColors.textTertiary,
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
-            ),
-            if (widget.link.description != null &&
-                widget.link.description!.trim().isNotEmpty) ...<Widget>[
-              const SizedBox(height: AppSpacing.sm),
-              Text(
-                widget.link.description!,
-                style: AppTypography.bodyMuted,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ],
-            if (widget.link.tags.isNotEmpty) ...<Widget>[
-              const SizedBox(height: AppSpacing.sm),
-              Wrap(
-                spacing: AppSpacing.xs,
-                runSpacing: AppSpacing.xs,
-                children: <Widget>[
-                  for (final String tag in widget.link.tags)
-                    InkWell(
-                      onTap: widget.onTagSelected != null
-                          ? () => widget.onTagSelected!(tag)
-                          : null,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppSpacing.sm,
-                          vertical: AppSpacing.xxs,
-                        ),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: AppColors.rule,
-                            width: AppSpacing.hairline,
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(AppSpacing.md),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Row(
+                      children: <Widget>[
+                        if (faviconUrl != null && faviconUrl.isNotEmpty)
+                          ClipRRect(
+                            borderRadius: BorderRadius.zero,
+                            child: Image.network(
+                              faviconUrl,
+                              width: 18,
+                              height: 18,
+                              fit: BoxFit.contain,
+                              errorBuilder: (
+                                BuildContext context,
+                                Object error,
+                                StackTrace? stackTrace,
+                              ) {
+                                return const Icon(
+                                  PixelIcons.link,
+                                  size: 18,
+                                  color: AppColors.textSecondary,
+                                );
+                              },
+                            ),
+                          )
+                        else
+                          const Icon(
+                            PixelIcons.link,
+                            size: 18,
+                            color: AppColors.textSecondary,
+                          ),
+                        const SizedBox(width: AppSpacing.sm),
+                        Expanded(
+                          child: Text(
+                            widget.link.name.isNotEmpty
+                                ? widget.link.name
+                                : widget.link.url,
+                            style: AppTypography.title,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                        child: Text(
-                          '#${tag.toLowerCase()}',
-                          style: AppTypography.caption,
+                        if (widget.link.health != LinkHealth.unknown) ...<Widget>[
+                          const SizedBox(width: AppSpacing.xs),
+                          Container(
+                            width: 8,
+                            height: 8,
+                            decoration: BoxDecoration(
+                              color: widget.link.health == LinkHealth.healthy
+                                  ? AppColors.success
+                                  : AppColors.danger,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                        ],
+                        const SizedBox(width: AppSpacing.xs),
+                        PixelIconButton(
+                          icon: PixelIcons.heart,
+                          color: widget.link.isFavorite
+                              ? AppColors.accent
+                              : AppColors.textTertiary,
+                          size: 32,
+                          tooltip: widget.link.isFavorite
+                              ? 'REMOVE FAVORITE'
+                              : 'FAVORITE',
+                          onPressed: widget.onToggleFavorite,
                         ),
-                      ),
+                      ],
                     ),
+                    const SizedBox(height: AppSpacing.xs),
+                    Row(
+                      children: <Widget>[
+                        Flexible(
+                          child: Text(
+                            domain.toUpperCase(),
+                            style: AppTypography.caption,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        const SizedBox(width: AppSpacing.sm),
+                        Flexible(
+                          child: Text(
+                            '// ${widget.categoryName.toUpperCase()}',
+                            style: AppTypography.caption.copyWith(
+                              color: AppColors.textTertiary,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                    if (widget.link.description != null &&
+                        widget.link.description!.trim().isNotEmpty) ...<Widget>[
+                      const SizedBox(height: AppSpacing.sm),
+                      Text(
+                        widget.link.description!,
+                        style: AppTypography.bodyMuted,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                    if (widget.link.tags.isNotEmpty) ...<Widget>[
+                      const SizedBox(height: AppSpacing.sm),
+                      Wrap(
+                        spacing: AppSpacing.xs,
+                        runSpacing: AppSpacing.xs,
+                        children: <Widget>[
+                          for (final String tag in widget.link.tags.take(4))
+                            InkWell(
+                              onTap: widget.onTagSelected != null
+                                  ? () => widget.onTagSelected!(tag)
+                                  : null,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: AppSpacing.sm,
+                                  vertical: AppSpacing.xxs,
+                                ),
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: AppColors.rule,
+                                    width: AppSpacing.hairline,
+                                  ),
+                                ),
+                                child: Text(
+                                  '#${tag.toLowerCase()}',
+                                  style: AppTypography.caption,
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            ),
+            const Rule(),
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.md,
+                vertical: AppSpacing.sm,
+              ),
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: PixelButton(
+                      label: 'OPEN',
+                      icon: PixelIcons.externalLink,
+                      variant: PixelButtonVariant.secondary,
+                      onPressed: _openUrl,
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.xs),
+                  PixelIconButton(
+                    icon: PixelIcons.copy,
+                    tooltip: 'COPY URL',
+                    onPressed: () => _copyUrl(context),
+                    size: AppSpacing.controlHeight,
+                  ),
+                  const SizedBox(width: AppSpacing.xs),
+                  PixelIconButton(
+                    icon: PixelIcons.pencil,
+                    tooltip: 'EDIT',
+                    onPressed: widget.onEdit,
+                    size: AppSpacing.controlHeight,
+                  ),
+                  const SizedBox(width: AppSpacing.xs),
+                  PixelIconButton(
+                    icon: PixelIcons.trash,
+                    color: AppColors.accent,
+                    tooltip: 'DELETE',
+                    onPressed: widget.onDelete,
+                    size: AppSpacing.controlHeight,
+                  ),
                 ],
               ),
-            ],
-            const Spacer(),
-            const SizedBox(height: AppSpacing.md),
-            const Rule(),
-            const SizedBox(height: AppSpacing.sm),
-            Row(
-              children: <Widget>[
-                Expanded(
-                  child: PixelButton(
-                    label: 'OPEN',
-                    icon: PixelIcons.externalLink,
-                    variant: PixelButtonVariant.secondary,
-                    onPressed: _openUrl,
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.sm),
-                PixelIconButton(
-                  icon: PixelIcons.copy,
-                  tooltip: 'COPY URL',
-                  onPressed: () => _copyUrl(context),
-                  size: AppSpacing.controlHeight,
-                ),
-                const SizedBox(width: AppSpacing.xs),
-                PixelIconButton(
-                  icon: PixelIcons.pencil,
-                  tooltip: 'EDIT',
-                  onPressed: widget.onEdit,
-                  size: AppSpacing.controlHeight,
-                ),
-                const SizedBox(width: AppSpacing.xs),
-                PixelIconButton(
-                  icon: PixelIcons.trash,
-                  color: AppColors.accent,
-                  tooltip: 'DELETE',
-                  onPressed: widget.onDelete,
-                  size: AppSpacing.controlHeight,
-                ),
-              ],
             ),
           ],
         ),
