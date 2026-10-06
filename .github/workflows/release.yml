@@ -1,0 +1,101 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build-cli:
+    name: Build CLI Binaries
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: linux-x64
+            archive_name: portal-cli-linux-amd64.tar.gz
+          - os: macos-13
+            target: darwin-x64
+            archive_name: portal-cli-darwin-amd64.tar.gz
+          - os: macos-latest
+            target: darwin-arm64
+            archive_name: portal-cli-darwin-arm64.tar.gz
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: "1.4.2"
+
+      - name: Build Binary
+        run: |
+          cd cli
+          bun install --frozen-lockfile
+          bun build --compile src/index.ts --outfile portal
+          tar -czvf "../${{ matrix.archive_name }}" portal
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.archive_name }}
+          path: ${{ matrix.archive_name }}
+
+  build-app-web:
+    name: Build Flutter Web
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.47.6"
+          channel: "stable"
+          cache: true
+
+      - name: Build Web
+        run: |
+          cd app
+          flutter pub get
+          flutter build web --release
+          cd build/web
+          tar -czvf "../../../portal-web.tar.gz" .
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: portal-web.tar.gz
+          path: portal-web.tar.gz
+
+  publish:
+    name: Publish GitHub Release
+    needs: [build-cli, build-app-web]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: Generate Checksums
+        run: |
+          cd dist
+          sha256sum * > checksums.txt
+          cat checksums.txt
+
+      - name: Create Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" \
+            dist/* \
+            --title "$GITHUB_REF_NAME" \
+            --generate-notes

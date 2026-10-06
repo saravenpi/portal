@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  cli:
+    name: CLI Checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: "1.4.2"
+
+      - name: Install CLI dependencies
+        run: cd cli && bun install --frozen-lockfile
+
+      - name: Test CLI
+        run: make cli-test
+
+      - name: Build CLI
+        run: make cli-build
+
+  flutter:
+    name: Flutter Checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.47.6"
+          channel: "stable"
+          cache: true
+
+      - name: Install dependencies
+        run: cd app && flutter pub get
+
+      - name: Static Analysis
+        run: make app-analyze
+
+      - name: Run Tests
+        run: make app-test

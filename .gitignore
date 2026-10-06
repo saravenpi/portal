@@ -36,3 +36,5 @@ index.html
 egg.conf
 portal.yml
 portal
+.dart_tool/
+build/
