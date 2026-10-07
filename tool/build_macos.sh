@@ -3,7 +3,6 @@
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-cd "$REPO_ROOT/app"
 
 DEFAULT_DEST="${NUAGE:-${HOME}/Documents/NuagePersonal}"
 DEST="$DEFAULT_DEST"
@@ -19,11 +18,17 @@ EOF
 
 while [ $# -gt 0 ]; do
   case "$1" in
-    --dest) DEST="${2:?--dest needs a directory}"; shift 2 ;;
+    --dest)
+      mkdir -p "$2"
+      DEST="$(cd "$2" && pwd)"
+      shift 2
+      ;;
     -h|--help) usage; exit 0 ;;
     *) echo "unknown option: $1" >&2; usage >&2; exit 2 ;;
   esac
 done
+
+cd "$REPO_ROOT/app"
 
 if ! command -v flutter >/dev/null 2>&1; then
   echo "error: flutter is not on PATH." >&2

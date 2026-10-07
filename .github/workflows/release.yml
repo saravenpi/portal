@@ -19,9 +19,6 @@ jobs:
           - os: ubuntu-latest
             target: linux-x64
             archive_name: portal-cli-linux-amd64.tar.gz
-          - os: macos-13
-            target: darwin-x64
-            archive_name: portal-cli-darwin-amd64.tar.gz
           - os: macos-latest
             target: darwin-arm64
             archive_name: portal-cli-darwin-arm64.tar.gz
@@ -46,33 +43,6 @@ jobs:
           name: ${{ matrix.archive_name }}
           path: ${{ matrix.archive_name }}
 
-  build-app-web:
-    name: Build Flutter Web
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: "3.47.6"
-          channel: "stable"
-          cache: true
-
-      - name: Build Web
-        run: |
-          cd app
-          flutter pub get
-          flutter build web --release
-          cd build/web
-          tar -czvf "../../../portal-web.tar.gz" .
-
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: portal-web.tar.gz
-          path: portal-web.tar.gz
-
   build-app-macos:
     name: Build Flutter macOS
     runs-on: macos-latest
@@ -88,29 +58,56 @@ jobs:
 
       - name: Build macOS
         run: |
-          cd app
-          flutter pub get
-          flutter build macos --release
-          cd build/macos/Build/Products/Release
-          hdiutil create -volname "Portal" -srcfolder portal.app -ov -format UDZO "../../../../../Portal-macos.dmg"
-          ditto -c -k --sequesterRsrc --keepParent portal.app "../../../../../Portal-macos.zip"
+          chmod +x tool/build_macos.sh
+          ./tool/build_macos.sh --dest "$GITHUB_WORKSPACE"
 
       - name: Upload Artifact DMG
         uses: actions/upload-artifact@v4
         with:
           name: Portal-macos-dmg
-          path: Portal-macos.dmg
+          path: Portal-*-macos.dmg
 
       - name: Upload Artifact ZIP
         uses: actions/upload-artifact@v4
         with:
           name: Portal-macos-zip
-          path: Portal-macos.zip
+          path: Portal-*-macos.zip
+
+  build-app-apk:
+    name: Build Android APK
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.47.6"
+          channel: "stable"
+          cache: true
+
+      - name: Build APK
+        run: |
+          chmod +x tool/build_apk.sh
+          ./tool/build_apk.sh --dest "$GITHUB_WORKSPACE"
+
+      - name: Upload Artifact APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Portal-universal-apk
+          path: Portal-*-universal.apk
 
   publish:
     name: Publish GitHub Release
-    needs: [build-cli, build-app-web, build-app-macos]
+    needs: [build-cli, build-app-macos, build-app-apk]
     runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
     steps:
       - uses: actions/checkout@v4
 
