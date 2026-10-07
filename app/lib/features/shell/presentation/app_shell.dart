@@ -178,6 +178,9 @@ class _AppShellState extends State<AppShell> {
       ],
     );
 
+    final bool isMacOS =
+        !kIsWeb && defaultTargetPlatform == TargetPlatform.macOS;
+
     final Widget scaffold = wide
         ? Scaffold(
             body: Row(
@@ -203,6 +206,7 @@ class _AppShellState extends State<AppShell> {
               bottom: false,
               child: Column(
                 children: <Widget>[
+                  if (isMacOS) const SizedBox(height: 38),
                   Expanded(child: content),
                   const Rule(),
                   _BottomBar(
@@ -254,20 +258,22 @@ class _Sidebar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    final bool isMacOS =
+        !kIsWeb && defaultTargetPlatform == TargetPlatform.macOS;
+    return Container(
       width: AppLayout.sidebarWidth,
-      child: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            const Padding(
+      color: AppColors.background,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+            Padding(
               padding: EdgeInsets.fromLTRB(
                 AppSpacing.md,
-                AppSpacing.lg,
+                isMacOS ? AppSpacing.xxl : AppSpacing.lg,
                 AppSpacing.md,
                 AppSpacing.lg,
               ),
-              child: _Wordmark(),
+              child: const _Wordmark(),
             ),
             const Rule(),
             const SizedBox(height: AppSpacing.sm),
@@ -330,8 +336,7 @@ class _Sidebar extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
+      );
   }
 }
 

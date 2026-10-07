@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -72,9 +73,43 @@ jobs:
           name: portal-web.tar.gz
           path: portal-web.tar.gz
 
+  build-app-macos:
+    name: Build Flutter macOS
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.47.6"
+          channel: "stable"
+          cache: true
+
+      - name: Build macOS
+        run: |
+          cd app
+          flutter pub get
+          flutter build macos --release
+          cd build/macos/Build/Products/Release
+          hdiutil create -volname "Portal" -srcfolder portal.app -ov -format UDZO "../../../../../Portal-macos.dmg"
+          ditto -c -k --sequesterRsrc --keepParent portal.app "../../../../../Portal-macos.zip"
+
+      - name: Upload Artifact DMG
+        uses: actions/upload-artifact@v4
+        with:
+          name: Portal-macos-dmg
+          path: Portal-macos.dmg
+
+      - name: Upload Artifact ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: Portal-macos-zip
+          path: Portal-macos.zip
+
   publish:
     name: Publish GitHub Release
-    needs: [build-cli, build-app-web]
+    needs: [build-cli, build-app-web, build-app-macos]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

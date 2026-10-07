@@ -32,6 +32,6 @@ abstract final class AppLayout {
   static const double gutter = AppSpacing.md;
   static const double gutterWide = AppSpacing.xxl;
   static const double sidebarWidth = 224;
-  static const double breakpointSidebar = 900;
+  static const double breakpointSidebar = 700;
   static const double breakpointWide = 1200;
 }

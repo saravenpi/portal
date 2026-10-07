@@ -138,11 +138,9 @@ class _SettingsViewState extends State<SettingsView> {
     return Scaffold(
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(AppSpacing.lg),
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: AppLayout.maxTextMeasure),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
               const Text('SETTINGS', style: AppTypography.display),
               const SizedBox(height: AppSpacing.sm),
               const Text(
@@ -244,8 +242,7 @@ class _SettingsViewState extends State<SettingsView> {
             ],
           ),
         ),
-      ),
-    );
+      );
   }
 }
 
@@ -331,7 +328,7 @@ class _AboutSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
-        const Text('PORTAL v0.3.1', style: AppTypography.headline),
+        const Text('PORTAL v0.4.0', style: AppTypography.headline),
         const SizedBox(height: AppSpacing.sm),
         const Text(
           'MINIMAL, LOCAL-FIRST BOOKMARKS MANAGER BUILT WITH INVERTED SWISS TYPOGRAPHY.',

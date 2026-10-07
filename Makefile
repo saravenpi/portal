@@ -1,4 +1,4 @@
-.PHONY: all build test cli-build cli-test cli-run app-run app-test app-analyze
+.PHONY: all build test cli-build cli-test cli-run app-run app-test app-analyze app-apk app-macos
 
 all: build
 
@@ -27,3 +27,6 @@ test: cli-test app-test
 
 app-apk:
 	./tool/build_apk.sh
+
+app-macos:
+	./tool/build_macos.sh

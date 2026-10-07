@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2026-10-07
+
+### Added
+- Native macOS full-size content view with transparent title bar and integrated traffic light controls.
+- Dedicated macOS top clearance on the sidebar preventing traffic lights from colliding with wordmark or actions.
+- Responsive layout with full-height fixed left sidebar on desktop and bottom navigation bar on mobile.
+
+### Fixed
+- Asymmetrical right margin on settings page by removing obsolete text measurement constraint and expanding full width.
+
 ## [0.3.1] - 2026-10-07
 
 ### Added
