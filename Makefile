@@ -1,4 +1,4 @@
-.PHONY: all build test cli-build cli-test cli-run app-run app-test app-analyze app-apk app-macos
+.PHONY: all build test cli-build cli-test cli-run app-run app-test app-analyze app-apk app-macos app-icons
 
 all: build
 
@@ -30,3 +30,6 @@ app-apk:
 
 app-macos:
 	./tool/build_macos.sh
+
+app-icons:
+	./tool/generate_icons.sh

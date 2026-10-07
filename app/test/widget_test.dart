@@ -113,7 +113,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('LOCAL VAULT AND FILE CONFIGURATION'), findsOneWidget);
-    expect(find.text('PORTAL v0.4.0'), findsOneWidget);
+    expect(find.text('PORTAL v0.5.0'), findsOneWidget);
   });
 
   testWidgets('AppShell renders bottom bar on narrow layout',

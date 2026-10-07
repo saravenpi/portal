@@ -118,11 +118,32 @@ class _AppShellState extends State<AppShell> {
     if (index == _selected) return;
     setState(() => _selected = index);
     if (_pageController.hasClients) {
-      _pageController.animateToPage(
-        index,
-        duration: const Duration(milliseconds: 250),
-        curve: Curves.easeInOut,
-      );
+      final bool wide =
+          MediaQuery.sizeOf(context).width >= AppLayout.breakpointSidebar;
+      if (wide) {
+        _pageController.jumpToPage(index);
+      } else {
+        _pageController.animateToPage(
+          index,
+          duration: const Duration(milliseconds: 250),
+          curve: Curves.easeInOut,
+        );
+      }
+    }
+  }
+
+  Widget _buildSection(int index) {
+    switch (index) {
+      case 0:
+        return const LinksView();
+      case 1:
+        return CategoriesView(onSelectCategory: _onCategorySelected);
+      case 2:
+        return TagsView(onSelectTag: _onTagSelected);
+      case 3:
+        return const SettingsView();
+      default:
+        return const LinksView();
     }
   }
 
@@ -165,7 +186,20 @@ class _AppShellState extends State<AppShell> {
     final String activeFileName =
         vault.activeFilePath.split(Platform.pathSeparator).last;
 
-    final Widget content = PageView(
+    final Widget desktopContent = AnimatedSwitcher(
+      duration: const Duration(milliseconds: 150),
+      switchInCurve: Curves.easeIn,
+      switchOutCurve: Curves.easeOut,
+      transitionBuilder: (Widget child, Animation<double> animation) {
+        return FadeTransition(opacity: animation, child: child);
+      },
+      child: KeyedSubtree(
+        key: ValueKey<int>(_selected),
+        child: _buildSection(_selected),
+      ),
+    );
+
+    final Widget mobileContent = PageView(
       controller: _pageController,
       onPageChanged: (int index) {
         setState(() => _selected = index);
@@ -197,7 +231,7 @@ class _AppShellState extends State<AppShell> {
                   isWatching: vault.isWatching,
                 ),
                 const VerticalRule(),
-                Expanded(child: content),
+                Expanded(child: desktopContent),
               ],
             ),
           )
@@ -207,7 +241,7 @@ class _AppShellState extends State<AppShell> {
               child: Column(
                 children: <Widget>[
                   if (isMacOS) const SizedBox(height: 38),
-                  Expanded(child: content),
+                  Expanded(child: mobileContent),
                   const Rule(),
                   _BottomBar(
                     destinations: _destinations,
@@ -348,9 +382,9 @@ class _Wordmark extends StatelessWidget {
     return Row(
       children: <Widget>[
         const Icon(
-          PixelIcons.externalLink,
-          size: 24,
-          color: AppColors.accent,
+          PixelIcons.circle,
+          size: 22,
+          color: AppColors.textPrimary,
         ),
         const SizedBox(width: AppSpacing.sm),
         Flexible(
